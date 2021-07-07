@@ -5,10 +5,10 @@
 //  Created by Steve Cheng on 12/6/2021.
 //
 
-#include <iostream>
+#include <core/includes.h>
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    std::cout << "Hello, World!\n";
+    std::cout << "Hello, green!\n";
     return 0;
 }

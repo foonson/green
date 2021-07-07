@@ -1,0 +1,34 @@
+
+
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+echo "export PATH=/opt/homebrew/bin:$PATH" >> ~/.bash_profile && source ~/.bash_profile
+
+brew search sdl
+
+brew install sdl2 sdl2_image
+
+/opt/homebrew/bin/brew install boost --without-python
+
+brew info boost
+
+/opt/homebrew/Cellar/sdl2/2.0.14_1/include/SDL2
+/opt/homebrew/Cellar/sdl2/2.0.14_1/lib
+
+
+config xcode Build Settings --> All --> Search Paths --> Header Serch Paths
+--> /usr/local/include
+config Xcode General ->add Frameworks and Libraries --> libSDL2-2.0.0.dylib
+
+
+g++  -I/usr/include/SDL2/ -I./tetris/ -I/opt/homebrew/Cellar/sdl2/2.0.14_1/include/ tetris.cpp --std=c++17 -L/opt/homebrew/Cellar/sdl2/2.0.14_1/lib/   -lSDL2
+
+sig handling
+
+.zshrc
+
+
+Target path
+Go to File -> Project settings
+Click the Advanced button
+Click Done, then Done once more.

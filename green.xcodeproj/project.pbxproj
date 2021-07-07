@@ -7,11 +7,42 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA10A8152684CA82007CDBA3 /* UCPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA10A8142684CA7A007CDBA3 /* UCPU.cpp */; };
+		AA10A8182684CBF3007CDBA3 /* UCPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA10A8142684CA7A007CDBA3 /* UCPU.cpp */; };
+		AA10A8192684CBF4007CDBA3 /* UCPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA10A8142684CA7A007CDBA3 /* UCPU.cpp */; };
+		AA10A81D2684D580007CDBA3 /* UTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA10A81B2684CE7A007CDBA3 /* UTime.cpp */; };
+		AA10A81E2684D581007CDBA3 /* UTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA10A81B2684CE7A007CDBA3 /* UTime.cpp */; };
+		AA10A81F2684D581007CDBA3 /* UTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA10A81B2684CE7A007CDBA3 /* UTime.cpp */; };
+		AA6C6CF6267718A5004399DB /* tetris.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA6C6CF5267718A5004399DB /* tetris.cpp */; };
+		AAA1608026772FB80027943C /* TeApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAA1607E26772FB80027943C /* TeApp.cpp */; };
 		AAB631072675012C00674E83 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB631062675012C00674E83 /* main.cpp */; };
+		AAB631142675016500674E83 /* busstop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB631132675016500674E83 /* busstop.cpp */; };
+		AAD10B00267BB697006161CC /* TeUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAD10AFE267BACA9006161CC /* TeUI.cpp */; };
+		AAF41B90268B79E300CF8099 /* USocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF41B8E268B79E300CF8099 /* USocket.cpp */; };
+		AAF41B91268B79E300CF8099 /* USocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF41B8E268B79E300CF8099 /* USocket.cpp */; };
+		AAF41B92268B79E300CF8099 /* USocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF41B8E268B79E300CF8099 /* USocket.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		AA6C6CF1267718A5004399DB /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		AAB631012675012C00674E83 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		AAB6310F2675016500674E83 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -23,12 +54,60 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AA10A8142684CA7A007CDBA3 /* UCPU.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = UCPU.cpp; sourceTree = "<group>"; tabWidth = 24; };
+		AA10A81A2684CCB3007CDBA3 /* Tick.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Tick.h; sourceTree = "<group>"; tabWidth = 2; };
+		AA10A81B2684CE7A007CDBA3 /* UTime.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = UTime.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		AA10A81C2684CE7A007CDBA3 /* UTime.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = UTime.h; sourceTree = "<group>"; tabWidth = 2; };
+		AA18D6412695533E00BC8187 /* Monitor.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Monitor.h; sourceTree = "<group>"; tabWidth = 2; };
+		AA6C6CF3267718A5004399DB /* tetris */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tetris; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA6C6CF5267718A5004399DB /* tetris.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = tetris.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		AAA088F726838F8200CD05C1 /* TeReadme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TeReadme.txt; sourceTree = "<group>"; };
+		AAA1607C26772E0F0027943C /* App.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = App.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAA1607D26772E800027943C /* SDLUI.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = SDLUI.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAA1607E26772FB80027943C /* TeApp.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = TeApp.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		AAA1607F26772FB80027943C /* TeApp.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeApp.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAA887F02679972600121116 /* Evaluation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Evaluation.h; sourceTree = "<group>"; };
+		AAA887F12679972600121116 /* Evaluation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Evaluation.cpp; sourceTree = "<group>"; };
+		AAAF880E2678CD8500358F0B /* AppContext.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = AppContext.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		AAAF880F2678CD8500358F0B /* AppContext.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = AppContext.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAAF88102678CDF300358F0B /* TeContext.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TeContext.cpp; sourceTree = "<group>"; };
+		AAAF88112678CDF300358F0B /* TeContext.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeContext.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAAF88122678D0F300358F0B /* TeIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TeIncludes.h; sourceTree = "<group>"; };
 		AAB631032675012C00674E83 /* green */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = green; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAB631062675012C00674E83 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		AAB631112675016500674E83 /* busstop */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = busstop; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAB631132675016500674E83 /* busstop.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = busstop.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		AAB6311B267501F200674E83 /* includes.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = includes.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAB6311C2675027400674E83 /* notes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
+		AAC4C2452684C3580026DD88 /* TeEvent.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeEvent.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAC4C2462684C3840026DD88 /* Event.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAC4C2482684C8960026DD88 /* UCPU.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = UCPU.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAD10AFD267BABAF006161CC /* UI.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = UI.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAD10AFE267BACA9006161CC /* TeUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TeUI.cpp; sourceTree = "<group>"; };
+		AAD10AFF267BACA9006161CC /* TeUI.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeUI.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAD458D2269089BC003DB668 /* Config.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAED438E269008450025246B /* .zshrc */ = {isa = PBXFileReference; lastKnownFileType = text; path = .zshrc; sourceTree = "<group>"; };
+		AAED4390269027210025246B /* TeConfig.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeConfig.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAF41B8E268B79E300CF8099 /* USocket.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = USocket.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		AAF41B8F268B79E300CF8099 /* USocket.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = USocket.h; sourceTree = "<group>"; tabWidth = 2; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AA6C6CF0267718A5004399DB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AAB631002675012C00674E83 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAB6310E2675016500674E83 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -38,11 +117,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA6C6CF4267718A5004399DB /* tetris */ = {
+			isa = PBXGroup;
+			children = (
+				AA6C6CF5267718A5004399DB /* tetris.cpp */,
+				AAA1607E26772FB80027943C /* TeApp.cpp */,
+				AAA1607F26772FB80027943C /* TeApp.h */,
+				AAAF88102678CDF300358F0B /* TeContext.cpp */,
+				AAAF88112678CDF300358F0B /* TeContext.h */,
+				AAAF88122678D0F300358F0B /* TeIncludes.h */,
+				AAD10AFE267BACA9006161CC /* TeUI.cpp */,
+				AAD10AFF267BACA9006161CC /* TeUI.h */,
+				AAA088F726838F8200CD05C1 /* TeReadme.txt */,
+				AAC4C2452684C3580026DD88 /* TeEvent.h */,
+				AAED4390269027210025246B /* TeConfig.h */,
+			);
+			path = tetris;
+			sourceTree = "<group>";
+		};
+		AA6C6CFA26771AAC004399DB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		AAB630FA2675012C00674E83 = {
 			isa = PBXGroup;
 			children = (
-				AAB631052675012C00674E83 /* green */,
+				AAED438C2690079D0025246B /* scripts */,
+				AAB6311A2675019F00674E83 /* doc */,
+				AAB631182675016C00674E83 /* src */,
 				AAB631042675012C00674E83 /* Products */,
+				AA6C6CFA26771AAC004399DB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -50,6 +157,8 @@
 			isa = PBXGroup;
 			children = (
 				AAB631032675012C00674E83 /* green */,
+				AAB631112675016500674E83 /* busstop */,
+				AA6C6CF3267718A5004399DB /* tetris */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -62,9 +171,94 @@
 			path = green;
 			sourceTree = "<group>";
 		};
+		AAB631122675016500674E83 /* busstop */ = {
+			isa = PBXGroup;
+			children = (
+				AAB631132675016500674E83 /* busstop.cpp */,
+			);
+			path = busstop;
+			sourceTree = "<group>";
+		};
+		AAB631182675016C00674E83 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				AAC4C2472684C87B0026DD88 /* util */,
+				AA6C6CF4267718A5004399DB /* tetris */,
+				AAB631192675019400674E83 /* core */,
+				AAB631122675016500674E83 /* busstop */,
+				AAB631052675012C00674E83 /* green */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		AAB631192675019400674E83 /* core */ = {
+			isa = PBXGroup;
+			children = (
+				AAB6311B267501F200674E83 /* includes.h */,
+				AAA1607C26772E0F0027943C /* App.h */,
+				AAA1607D26772E800027943C /* SDLUI.h */,
+				AAAF880E2678CD8500358F0B /* AppContext.cpp */,
+				AAAF880F2678CD8500358F0B /* AppContext.h */,
+				AAA887F02679972600121116 /* Evaluation.h */,
+				AAA887F12679972600121116 /* Evaluation.cpp */,
+				AAD10AFD267BABAF006161CC /* UI.h */,
+				AAC4C2462684C3840026DD88 /* Event.h */,
+				AAD458D2269089BC003DB668 /* Config.h */,
+				AA18D6412695533E00BC8187 /* Monitor.h */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
+		AAB6311A2675019F00674E83 /* doc */ = {
+			isa = PBXGroup;
+			children = (
+				AAB6311C2675027400674E83 /* notes.txt */,
+			);
+			path = doc;
+			sourceTree = "<group>";
+		};
+		AAC4C2472684C87B0026DD88 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				AAC4C2482684C8960026DD88 /* UCPU.h */,
+				AA10A8142684CA7A007CDBA3 /* UCPU.cpp */,
+				AA10A81A2684CCB3007CDBA3 /* Tick.h */,
+				AA10A81B2684CE7A007CDBA3 /* UTime.cpp */,
+				AA10A81C2684CE7A007CDBA3 /* UTime.h */,
+				AAF41B8E268B79E300CF8099 /* USocket.cpp */,
+				AAF41B8F268B79E300CF8099 /* USocket.h */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
+		AAED438C2690079D0025246B /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+				AAED438E269008450025246B /* .zshrc */,
+			);
+			path = scripts;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AA6C6CF2267718A5004399DB /* tetris */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA6C6CF7267718A5004399DB /* Build configuration list for PBXNativeTarget "tetris" */;
+			buildPhases = (
+				AA6C6CEF267718A5004399DB /* Sources */,
+				AA6C6CF0267718A5004399DB /* Frameworks */,
+				AA6C6CF1267718A5004399DB /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tetris;
+			productName = tetris;
+			productReference = AA6C6CF3267718A5004399DB /* tetris */;
+			productType = "com.apple.product-type.tool";
+		};
 		AAB631022675012C00674E83 /* green */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AAB6310A2675012C00674E83 /* Build configuration list for PBXNativeTarget "green" */;
@@ -82,6 +276,23 @@
 			productReference = AAB631032675012C00674E83 /* green */;
 			productType = "com.apple.product-type.tool";
 		};
+		AAB631102675016500674E83 /* busstop */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AAB631152675016500674E83 /* Build configuration list for PBXNativeTarget "busstop" */;
+			buildPhases = (
+				AAB6310D2675016500674E83 /* Sources */,
+				AAB6310E2675016500674E83 /* Frameworks */,
+				AAB6310F2675016500674E83 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = busstop;
+			productName = busstop;
+			productReference = AAB631112675016500674E83 /* busstop */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -90,7 +301,13 @@
 			attributes = {
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
+					AA6C6CF2267718A5004399DB = {
+						CreatedOnToolsVersion = 12.5;
+					};
 					AAB631022675012C00674E83 = {
+						CreatedOnToolsVersion = 12.5;
+					};
+					AAB631102675016500674E83 = {
 						CreatedOnToolsVersion = 12.5;
 					};
 				};
@@ -109,29 +326,94 @@
 			projectRoot = "";
 			targets = (
 				AAB631022675012C00674E83 /* green */,
+				AAB631102675016500674E83 /* busstop */,
+				AA6C6CF2267718A5004399DB /* tetris */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AA6C6CEF267718A5004399DB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAD10B00267BB697006161CC /* TeUI.cpp in Sources */,
+				AAA1608026772FB80027943C /* TeApp.cpp in Sources */,
+				AAF41B92268B79E300CF8099 /* USocket.cpp in Sources */,
+				AA10A81D2684D580007CDBA3 /* UTime.cpp in Sources */,
+				AA10A8152684CA82007CDBA3 /* UCPU.cpp in Sources */,
+				AA6C6CF6267718A5004399DB /* tetris.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AAB630FF2675012C00674E83 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA10A8192684CBF4007CDBA3 /* UCPU.cpp in Sources */,
 				AAB631072675012C00674E83 /* main.cpp in Sources */,
+				AAF41B90268B79E300CF8099 /* USocket.cpp in Sources */,
+				AA10A81F2684D581007CDBA3 /* UTime.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAB6310D2675016500674E83 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA10A8182684CBF3007CDBA3 /* UCPU.cpp in Sources */,
+				AAB631142675016500674E83 /* busstop.cpp in Sources */,
+				AAF41B91268B79E300CF8099 /* USocket.cpp in Sources */,
+				AA10A81E2684D581007CDBA3 /* UTime.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		AA6C6CF8267718A5004399DB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				"EXCLUDED_ARCHS[sdk=*]" = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/sdl2/2.0.14_1/lib,
+					/opt/homebrew/Cellar/sdl2_image/2.0.5/lib,
+				);
+				OTHER_LDFLAGS = (
+					"-lSDL2",
+					"-lSDL2_image",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AA6C6CF9267718A5004399DB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				"EXCLUDED_ARCHS[sdk=*]" = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/sdl2/2.0.14_1/lib,
+					/opt/homebrew/Cellar/sdl2_image/2.0.5/lib,
+				);
+				OTHER_LDFLAGS = (
+					"-lSDL2",
+					"-lSDL2_image",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		AAB631082675012C00674E83 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -162,6 +444,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				EXCLUDED_ARCHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -176,6 +459,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					src,
+					/opt/homebrew/Cellar/sdl2/2.0.14_1/include/SDL2,
+					/opt/homebrew/Cellar/sdl2_image/2.0.5/include/SDL2,
+					/opt/homebrew/Cellar/boost/1.76.0/include,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -190,7 +479,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -221,6 +510,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				EXCLUDED_ARCHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -229,6 +519,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					src,
+					/opt/homebrew/Cellar/sdl2/2.0.14_1/include/SDL2,
+					/opt/homebrew/Cellar/sdl2_image/2.0.5/include/SDL2,
+					/opt/homebrew/Cellar/boost/1.76.0/include,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -240,11 +536,35 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/sdl2/2.0.14_1/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
 		AAB6310C2675012C00674E83 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/sdl2/2.0.14_1/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		AAB631162675016500674E83 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AAB631172675016500674E83 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -255,6 +575,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AA6C6CF7267718A5004399DB /* Build configuration list for PBXNativeTarget "tetris" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA6C6CF8267718A5004399DB /* Debug */,
+				AA6C6CF9267718A5004399DB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AAB630FE2675012C00674E83 /* Build configuration list for PBXProject "green" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -269,6 +598,15 @@
 			buildConfigurations = (
 				AAB6310B2675012C00674E83 /* Debug */,
 				AAB6310C2675012C00674E83 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AAB631152675016500674E83 /* Build configuration list for PBXNativeTarget "busstop" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AAB631162675016500674E83 /* Debug */,
+				AAB631172675016500674E83 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
