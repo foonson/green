@@ -8,9 +8,9 @@
 #ifndef TeEvent_h
 #define TeEvent_h
 
-
 #include "core/Event.h"
 #include <boost/preprocessor.hpp>
+#include <cassert>
 
 #define TEEVENT_CASE_ETOSTRING(r, d, elem) \
   case elem : return BOOST_PP_STRINGIZE( elem );
@@ -41,19 +41,19 @@ public:
   static std::string_view name(uint16_t eventType_) {
     switch(eventType_) {
         BOOST_PP_SEQ_FOR_EACH(TEEVENT_CASE_ETOSTRING, TeEvent, AllTeEvents) ;
-      default: return "Unknown";
+      default:
+        assert(false && "unknown event");
+        return "Unknown";
     }
+  }
+  
+  std::string_view name() {
+    return name(eventType());
   }
 };
 
-class TeXYEvent : public TeEvent {
+EventClass(TeXYEvent, TeEvent)
 
-public:
-  TeXYEvent() {
-    size(sizeof(TeXYEvent));
-    eventType(ETeXYEvent);
-  }
-  
   void apply(uint16_t& x_, uint16_t& y_) {
     x_ = _x;
     y_ = _y;
@@ -65,20 +65,10 @@ public:
 
 };
 
-class TeUIEvent : public TeEvent {
-public:
-  TeUIEvent() {
-    size(sizeof(TeUIEvent));
-    eventType(ETeUIEvent);
-  }
+EventClass(TeUIEvent, TeEvent)
 };
 
-class TeTickMoveEvent : public TeEvent {
-public:
-  TeTickMoveEvent() {
-    size(sizeof(TeTickMoveEvent));
-    eventType(ETeTickMoveEvent);
-  }
+EventClass(TeTickMoveEvent, TeEvent)
 };
 
 

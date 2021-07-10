@@ -21,6 +21,7 @@ struct TeAppTraits {
   using  TConfig=tetris::TeConfig;
   using TContext=tetris::TeContext;
   using      TUI=tetris::TeUI;
+  using   TEvent=tetris::TeEvent;
 };
 
 class TeApp : public core::App<TeApp, TeAppTraits > {
@@ -42,8 +43,8 @@ public:
 
   
   void evaluateTimer();
-  void evaluateMove(core::EventSPtr pEvent);
-  void evaluate(core::EventSPtr pEvent);
+  void evaluateMove(core::EventPtr pEvent);
+  void evaluate(core::EventPtr pEvent);
   //void dropcopy(core::Event* pEvent);
 
 private:

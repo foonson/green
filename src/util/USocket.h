@@ -30,7 +30,7 @@ public:
   ~ServerSocket();
   bool listen(const std::string_view host_, uint16_t port_);
   bool acceptClient();
-  SOCKET_RC receiveBuffer(void** ppBuffer);
+  SOCKET_RC receiveBuffer(char** ppBuffer);
   
 private:
   int _servSocket = -1;

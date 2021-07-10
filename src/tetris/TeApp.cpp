@@ -16,30 +16,28 @@ void TeApp::evaluateTimer() {
   if (!config().isServer()) { return ; }
 
   if (_moveTick.pass()) {
-    evalEvents().push(core::EventSPtr(new TeTickMoveEvent()));
+    auto* pEvent = core::Event::createEvent<TeTickMoveEvent>();    
+    bool b = core::push(evalEvents(), pEvent);
+    if (!b) {
+      std::cout << "evalEvents().push failure\n";
+      core::Event::releaseEvent(pEvent);
+    }
   }
 }
 
-void TeApp::evaluate(core::EventSPtr pEvent) {
+void TeApp::evaluate(core::EventPtr pEvent) {
 
   switch(pEvent->eventType()) {
-    case ETeTickMoveEvent: { evaluateMove(pEvent); return; }
+    case ETeTickMoveEvent: { return evaluateMove(pEvent);  }
   }
 
-  if (pEvent->isContextEvent()) {
-    contextEvents().push(pEvent);
-    // update UI
-    auto* uiEvent = new TeUIEvent();
-    uiEvent->size(sizeof(uiEvent));
-    uiEvents().push(core::EventSPtr(uiEvent));
-  }
 }
 
-void TeApp::evaluateMove(core::EventSPtr pEvent) {
+void TeApp::evaluateMove(core::EventPtr pEvent) {
   auto& rctx = context();
   
   auto x = rctx._x;
-  auto* xyEvent = new TeXYEvent();
+  auto* xyEvent = core::Event::createEvent<TeXYEvent>();
   xyEvent->handle(TeTargetEnum::XY);
 
   xyEvent->_y = 0;
@@ -48,11 +46,19 @@ void TeApp::evaluateMove(core::EventSPtr pEvent) {
   } else {
     xyEvent->_x = 0;
   }
-  contextEvents().push(core::EventSPtr(xyEvent));
+  
+  auto b = core::push(contextEvents(), xyEvent);
+  if (!b) {
+    std::cout << "contextEvents().push failure\n";
+    core::Event::releaseEvent(pEvent);
+  }
 
-  auto* uiEvent = new TeUIEvent();
-  uiEvent->size(sizeof(uiEvent));
-  uiEvents().push(core::EventSPtr(uiEvent));
+  auto* uiEvent = core::Event::createEvent<TeUIEvent>();
+  b = core::push(uiEvents(), uiEvent);
+  if (!b) {
+    std::cout << "uiEvents().push failure\n";
+    core::Event::releaseEvent(uiEvent);
+  }
   
 }
 

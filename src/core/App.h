@@ -8,10 +8,12 @@
 #ifndef App_h
 #define App_h
 
+// std
 #include "core/includes.h"
 #include <thread>
 #include <csignal>
 
+// green
 #include "util/UCPU.h"
 #include "util/Tick.h"
 #include "util/USocket.h"
@@ -20,6 +22,7 @@
 
 // boost
 #include <boost/lockfree/spsc_queue.hpp>
+#include <boost/lockfree/queue.hpp>
 
 namespace core {
 
@@ -31,12 +34,33 @@ public:
   using TContext=typename TAppTraits::TContext;
   using  TConfig=typename TAppTraits::TConfig;
   using      TUI=typename TAppTraits::TUI;
+  using   TEvent=typename TAppTraits::TEvent; // for event display
 
+  /*
   using EventQueue=boost::lockfree::spsc_queue
   <
     core::EventSPtr,
     boost::lockfree::capacity<1000>  // TODO:
   >;
+  using DropcopyQueue=boost::lockfree::queue
+  <
+    core::EventPtr,
+    boost::lockfree::capacity<1000>  // TODO:
+  >;
+   */
+
+  using QueueElement=core::EventPtr;
+  using EventQueue=boost::lockfree::spsc_queue
+  <
+    QueueElement,
+    boost::lockfree::capacity<1000>  // TODO:
+  >;
+  using DropcopyQueue=boost::lockfree::queue
+  <
+    QueueElement,
+    boost::lockfree::capacity<1000>  // TODO:
+  >;
+
   
   static TApp& app() {
     static TApp _gapp;
@@ -110,7 +134,7 @@ public:
     monitor().monitorQueueLength( printSnapShot_,
                                  evalEvents().read_available(),
                                    uiEvents().read_available(),
-                             dropcopyEvents().read_available(),
+                             /*dropcopyEvents().read_available()*/ -1,
                               contextEvents().read_available());
   }
   
@@ -119,8 +143,33 @@ public:
 
   }
   
+  bool forwardEvent(core::EventPtr pEvent) {
+    // Forward the context/UI event from drop to queue
+    if (!pEvent->isFromDropcopy()) { return false ;}
+    
+    if (pEvent->isContextEvent()) {
+      auto rc = core::push(contextEvents(), pEvent);
+      if (!rc) {
+        std::cerr << "Drop event - contextEvents";
+        core::Event::releaseEvent(pEvent);
+      }
+      return true;
+    }
+
+    if (pEvent->isUIEvent()) {
+      auto rc = core::push(uiEvents(), pEvent);
+      if (!rc) {
+        std::cerr << "Drop event - uiEvent";
+        core::Event::releaseEvent(pEvent);
+      }
+      return true;
+    }
+    
+    return false;
+  }
+  
   void evalLoop() {
-    while (!_exitFlag) {
+    while (!exitFlag()) {
 
       if (!_evalThrottle.pass()) { continue; }
 
@@ -129,19 +178,30 @@ public:
       
     // IO
       netServer().acceptClient();
-      void* pBuffer = nullptr;
+      char* pBuffer = nullptr;
       util::USocket::SOCKET_RC rc = netServer().receiveBuffer(&pBuffer);
       if (rc==util::USocket::SOCKET_RC::SUCCESS && pBuffer!=nullptr) {
-        core::Event* pEvent = static_cast<core::Event*>(pBuffer);
+        core::Event* pEvent = core::Event::createEvent<Event>(pBuffer);
+        
         pEvent->isFromDropcopy(true);
 
-        std::cout << util::UCPU::cpuTick() << ": Receive " << std::hex << pEvent->eventType() << " " << std::dec << pEvent->size() << "bytes\n";
-
+        auto* tpEvent = core::Event::castEvent<TEvent*>(pEvent);
+        std::string_view eventName = tpEvent->name();
         
-        if (pEvent->isContextEvent()) {
-          evalEvents().push(EventSPtr(pEvent));
+        std::cout << util::UCPU::cpuTick() << "[" << tpEvent->dcSeqno() << "]: Receive " << eventName << " " << tpEvent->size() << " bytes\n";
+
+        if (pEvent->isContextEvent() ||
+            pEvent->isUIEvent())
+        {
+          auto rc = core::push(evalEvents(), pEvent);
+          if (!rc) {
+            std::cerr << "Drop event - evalEvents\n";
+            core::Event::releaseEvent(pEvent);
+          }
+
         } else {
-          std::cout << "Discard " << pEvent->eventType() << "\n";
+          std::cout << "Discard " << eventName << "\n";
+          core::Event::releaseEvent(pEvent);
         }
       }
 
@@ -149,23 +209,43 @@ public:
 
       // Evaluate
       do {
-        EventSPtr pEvent;
+        EventPtr pEvent;
         if(!evalEvents().pop(pEvent)) { break; }
+
+        // forward event
+        if (forwardEvent(pEvent)) {
+          continue;
+        }
+
+        // application specific evaluation
         app().evaluate(pEvent);
 
         if (!pEvent->isFromDropcopy()) {
-          dropcopyEvents().push(pEvent);
+          auto rc = core::push(dropcopyEvents(), pEvent);
+          if (!rc) {
+            std::cerr << "Drop event - dropcopyEvents 1\n";
+            core::Event::releaseEvent(pEvent);
+          }
+        } else {
+          core::Event::releaseEvent(pEvent);
         }
       } while (true);
       
       // Update context
       do {
-        EventSPtr pEvent;
+        EventPtr pEvent;
         if(!contextEvents().pop(pEvent)) { break; }
-        context().updateContext(pEvent.get());
+        context().updateContext(pEvent); //TODO
         
         if (!pEvent->isFromDropcopy()) {
-          dropcopyEvents().push(pEvent);
+          auto rc = core::push(dropcopyEvents(), pEvent);
+          if (!rc) {
+            std::cerr << "Drop event - dropcopyEvents 2\n";
+            core::Event::releaseEvent(pEvent);
+          }
+
+        } else {
+          core::Event::releaseEvent(pEvent);
         }
       } while (true);
       
@@ -175,13 +255,28 @@ public:
   }
   
   void uiLoop() {
-    while (!_exitFlag) {
+    while (!exitFlag()) {
       if (!_uiThrottle.pass()) { continue; }
       
       do {
-        EventSPtr pEvent;
+        EventPtr pEvent;
         if (!uiEvents().pop(pEvent)) { break; }
-        ui().render(pEvent.get());
+        
+        if (!exitFlag()) {
+          ui().render(pEvent); // TODO
+        }
+
+        // Resolved TODO: break SPSC
+        if (!pEvent->isFromDropcopy()) {
+          auto rc = core::push(dropcopyEvents(), pEvent);
+          if (!rc) {
+            std::cerr << "Drop event - dropcopyEvents 3\n";
+            core::Event::releaseEvent(pEvent);
+          }
+        } else {
+          core::Event::releaseEvent(pEvent);
+        }
+
       } while(true);
         
     }
@@ -191,7 +286,7 @@ public:
     
     // Server connection
     int i=0;
-    while (!_exitFlag) {
+    while (!exitFlag()) {
       if (netClient().connect(config().connectHost(), config().connectPort()))
       {
         break;
@@ -203,18 +298,25 @@ public:
     
     // dropcopy Loop
     while (!_exitFlag) {
-      EventSPtr pEvent;
+      EventPtr pEvent;
       if (dropcopyEvents().pop(pEvent)) {
-        app().dropcopy(pEvent.get());
+        app().dropcopy(pEvent);
+        
+        // release event
+        core::Event::releaseEvent(pEvent);
       }
     }
   }
 
   void dropcopy(core::Event* pEvent) {
-    std::cout << util::UCPU::cpuTick() << ": Send " << std::hex << pEvent->eventType() << " " << std::dec << pEvent->size() << "bytes\n";
+    //auto tid=std::this_thread::get_id();
+    pEvent->dcSeqno(_dcSeqno++);
+    auto* tpEvent = core::Event::castEvent<TEvent*>(pEvent);
+    std::string_view eventName = tpEvent->name();
+    std::cout << util::UCPU::cpuTick() << "[" << pEvent->dcSeqno() << "]: Send " << eventName << " " << std::dec << pEvent->size() << "bytes\n";
     netClient().sendBuffer(pEvent, pEvent->size());
-  }
 
+  }
   
   bool shutdown() {
     std::cout << "App::shutdown\n";
@@ -226,6 +328,16 @@ public:
   
   static void signalHandler(int signNum_) {
     std::cout << "signalHandler signNum:" << signNum_ << "\n";
+    
+    switch(signNum_) {
+      case SIGINT:  std::cout << "SIGINT\n";  break;
+      case SIGTERM: std::cout << "SIGTERM\n"; break;
+      case SIGSEGV: std::cout << "SIGSEGV\n"; break;
+      case SIGILL:  std::cout << "SIGILL\n";  break;
+      case SIGABRT: std::cout << "SIGABRT\n"; break;
+      case SIGFPE:  std::cout << "SIGFPE\n";  break;
+    }
+    
     app()._exitFlag = true;
   }
 
@@ -237,10 +349,11 @@ public:
     std::signal(SIGABRT, &App::signalHandler);
     std::signal(SIGFPE,  &App::signalHandler);
 
-    std::signal(SIGPIPE,  &App::signalHandler);
+    std::signal(SIGPIPE,  &App::signalHandler); // TODO
 
   }
 
+  auto        exitFlag() { return _exitFlag;       }
   auto&        context() { return _context;        }
   auto&             ui() { return _ui;             }
   auto&         config() { return _config;         }
@@ -262,6 +375,7 @@ private:
   util::Tick _uiThrottle;
   util::Tick _evalThrottle;
   uint64_t   _tickPerMilli;
+  uint32_t   _dcSeqno = 0;
   
   util::ServerSocket _netServer;
   util::ClientSocket _netClient; // TODO: multiple client
@@ -269,8 +383,9 @@ private:
   EventQueue _evalEvents;
   EventQueue _contextEvents;
   EventQueue _uiEvents;
-  EventQueue _dropcopyEvents;
-  
+  //EventQueue _dropcopyEvents; // TODO: this is not spsc
+  DropcopyQueue _dropcopyEvents;
+
   Monitor _monitor;
 
 };

@@ -11,8 +11,6 @@
 #include "core/AppContext.h"
 #include "TeEvent.h"
 
-
-
 namespace tetris {
 
 class TeContext : public core::AppContext<TeContext> {
@@ -24,7 +22,7 @@ public:
     switch(pBaseEvent->handle()) {
       case TeTargetEnum::XY:
       {
-        auto* pEvent = static_cast<TeXYEvent*>(pBaseEvent);
+        auto* pEvent = core::Event::castEvent<TeXYEvent*>(pBaseEvent);
         pEvent->apply(_x, _y);
       }
     }

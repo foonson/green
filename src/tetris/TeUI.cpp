@@ -19,8 +19,8 @@ void TeUI::renderFrame(SDL_Renderer* pRenderer_, core::Event* pEvent_) {
   SDL_Rect rect;
   rect.x = rctx._x;
   rect.y = rctx._y;
-  rect.w = 50;
-  rect.h = 50;
+  rect.w = 100;
+  rect.h = 100;
   //printf("%d %d %d %d\n", rect.x, rect.y, rect.w, rect.h);
   SDL_RenderFillRect(pRenderer_, &rect);
 
