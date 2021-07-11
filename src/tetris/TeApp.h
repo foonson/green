@@ -41,11 +41,9 @@ public:
     return true;
   }
 
-  
   void evaluateTimer();
   void evaluateMove(core::EventPtr pEvent);
   void evaluate(core::EventPtr pEvent);
-  //void dropcopy(core::Event* pEvent);
 
 private:
   util::Tick _moveTick;

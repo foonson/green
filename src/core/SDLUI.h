@@ -49,7 +49,7 @@ public:
     //_pRender = SDL_CreateRenderer(_pWindow, -1, SDL_RENDERER_ACCELERATED);
     _pRenderer = SDL_CreateRenderer(_pWindow, -1, 0);
 
-    SDL_Surface* pSurface = IMG_Load("/Users/steve/background.jpg");
+    SDL_Surface* pSurface = IMG_Load("/Users/steve/green/background.jpg");
     _pTxBackground = SDL_CreateTextureFromSurface(renderer(), pSurface);
     SDL_FreeSurface(pSurface);
 

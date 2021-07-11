@@ -19,6 +19,8 @@
 #include "util/USocket.h"
 #include "core/Event.h"
 #include "core/Monitor.h"
+#include "core/Dropcopy.h"
+#include "core/Reader.h"
 
 // boost
 #include <boost/lockfree/spsc_queue.hpp>
@@ -28,26 +30,13 @@ namespace core {
 
 template<typename TApp, typename TAppTraits>
 class App {
-    
+  
 public:
   
   using TContext=typename TAppTraits::TContext;
   using  TConfig=typename TAppTraits::TConfig;
   using      TUI=typename TAppTraits::TUI;
   using   TEvent=typename TAppTraits::TEvent; // for event display
-
-  /*
-  using EventQueue=boost::lockfree::spsc_queue
-  <
-    core::EventSPtr,
-    boost::lockfree::capacity<1000>  // TODO:
-  >;
-  using DropcopyQueue=boost::lockfree::queue
-  <
-    core::EventPtr,
-    boost::lockfree::capacity<1000>  // TODO:
-  >;
-   */
 
   using QueueElement=core::EventPtr;
   using EventQueue=boost::lockfree::spsc_queue
@@ -61,7 +50,6 @@ public:
     boost::lockfree::capacity<1000>  // TODO:
   >;
 
-  
   static TApp& app() {
     static TApp _gapp;
     return _gapp;
@@ -74,6 +62,18 @@ public:
     // Register Signal Handler
     registerSignalHandler();
 
+    if (!config().initialize(argc_, argv_)) {
+      std::cerr << "config initialize failure!\n";
+      return false;
+    }
+
+    if (config().needDropcopy()) {
+      if (!dropcopy().initialize(config().journalPathName())) {
+        std::cerr << "dropcopy initialize failure!\n";
+        return false;
+      }
+    }
+
     // Initialize ticker
     std::cout << "Start CPU tick:" << _startTick << "\n";
     std::cout << "coreCount:" << util::UCPU::coreCount() << "\n";
@@ -85,15 +85,14 @@ public:
     std::cout << "TickPerMilli _uiTick:"   << _uiThrottle.tickPerMilli() << "\n";
     std::cout << "TickPerMilli _evalTick:" << _evalThrottle.tickPerMilli() << "\n";
 
-    if (!config().initialize(argc_, argv_)) {
-      return false;
-    }
     
     if (!context().initialize()) {
+      std::cerr << "context initialize failure!\n";
       return false;
     }
     
     if (!ui().initialize()) {
+      std::cerr << "ui initialize failure!\n";
       return false;
     }
 
@@ -102,7 +101,17 @@ public:
     return true;
   }
   
+  void readJournal() {
+    Reader<TAppTraits> reader;
+    reader.readJournal(config().journalPathName());
+  }
+  
   void run() {
+    
+    // reader
+    if (config().mode()==TConfig::ConfigAsReader) {
+      return readJournal();
+    }
     
     std::thread uiThread;
     std::thread dropcopyThread;
@@ -112,7 +121,9 @@ public:
     }
 
     if constexpr (TApp::REQUIRE_DROPCOPY_THREAD) {
-      dropcopyThread = std::thread(&App::dropcopyLoop, this);
+      if (config().needDropcopy()) {
+        dropcopyThread = std::thread(&App::dropcopyLoop, this);
+      }
     }
 
     evalLoop();
@@ -125,7 +136,9 @@ public:
     std::cout << "Wait Dropcopy thread finish\n";
     healthCheck(true);
     if constexpr (TApp::REQUIRE_DROPCOPY_THREAD) {
-      dropcopyThread.join();
+      if (config().needDropcopy()) {
+        dropcopyThread.join();
+      }
     }
 
   }
@@ -179,9 +192,10 @@ public:
     // IO
       netServer().acceptClient();
       char* pBuffer = nullptr;
-      util::USocket::SOCKET_RC rc = netServer().receiveBuffer(&pBuffer);
+      EventSize eventSize = 0;
+      util::USocket::SOCKET_RC rc = netServer().receiveBuffer(&pBuffer, eventSize);
       if (rc==util::USocket::SOCKET_RC::SUCCESS && pBuffer!=nullptr) {
-        core::Event* pEvent = core::Event::createEvent<Event>(pBuffer);
+        core::Event* pEvent = core::Event::createEvent(pBuffer, eventSize);
         
         pEvent->isFromDropcopy(true);
 
@@ -300,22 +314,12 @@ public:
     while (!_exitFlag) {
       EventPtr pEvent;
       if (dropcopyEvents().pop(pEvent)) {
-        app().dropcopy(pEvent);
+        dropcopy().dropcopy(pEvent, netClient());
         
         // release event
         core::Event::releaseEvent(pEvent);
       }
     }
-  }
-
-  void dropcopy(core::Event* pEvent) {
-    //auto tid=std::this_thread::get_id();
-    pEvent->dcSeqno(_dcSeqno++);
-    auto* tpEvent = core::Event::castEvent<TEvent*>(pEvent);
-    std::string_view eventName = tpEvent->name();
-    std::cout << util::UCPU::cpuTick() << "[" << pEvent->dcSeqno() << "]: Send " << eventName << " " << std::dec << pEvent->size() << "bytes\n";
-    netClient().sendBuffer(pEvent, pEvent->size());
-
   }
   
   bool shutdown() {
@@ -323,6 +327,7 @@ public:
     monitor().printSummary();
     ui().shutdown();
     context().shutdown();
+    if (config().needDropcopy()) { dropcopy().shutdown(); }
     return true;
   }
   
@@ -336,8 +341,11 @@ public:
       case SIGILL:  std::cout << "SIGILL\n";  break;
       case SIGABRT: std::cout << "SIGABRT\n"; break;
       case SIGFPE:  std::cout << "SIGFPE\n";  break;
+      case SIGPIPE: std::cout << "SIGPIPE\n"; break;
+      default:      std::cout << "Signum:" << signNum_ << "\n";
     }
     
+    app().healthCheck(true);
     app()._exitFlag = true;
   }
 
@@ -348,9 +356,7 @@ public:
     std::signal(SIGILL,  &App::signalHandler);
     std::signal(SIGABRT, &App::signalHandler);
     std::signal(SIGFPE,  &App::signalHandler);
-
     std::signal(SIGPIPE,  &App::signalHandler); // TODO
-
   }
 
   auto        exitFlag() { return _exitFlag;       }
@@ -365,28 +371,30 @@ public:
   auto&      netServer() { return _netServer;      }
   auto    tickPerMilli() { return _tickPerMilli;   }
   auto&        monitor() { return _monitor;        }
+  auto&       dropcopy() { return _dropcopy;       }
   
 private:
   bool       _exitFlag = false;
+  uint64_t   _startTick;
+  uint64_t   _tickPerMilli;
+  util::Tick _uiThrottle;
+  util::Tick _evalThrottle;
+
   TContext   _context;
   TUI        _ui;
   TConfig    _config;
-  uint64_t   _startTick;
-  util::Tick _uiThrottle;
-  util::Tick _evalThrottle;
-  uint64_t   _tickPerMilli;
-  uint32_t   _dcSeqno = 0;
-  
+  Dropcopy   _dropcopy;
+  Monitor    _monitor;
+
   util::ServerSocket _netServer;
   util::ClientSocket _netClient; // TODO: multiple client
-
+  
   EventQueue _evalEvents;
   EventQueue _contextEvents;
   EventQueue _uiEvents;
-  //EventQueue _dropcopyEvents; // TODO: this is not spsc
+  //EventQueue _dropcopyEvents; // Resolved TODO: this is not spsc
   DropcopyQueue _dropcopyEvents;
 
-  Monitor _monitor;
 
 };
 

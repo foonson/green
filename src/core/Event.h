@@ -29,6 +29,7 @@ const uint16_t      kTickEvent=kTickEvent10;
 
 
 typedef uint32_t Handle;
+using EventSize=uint16_t;
 
 class Event {
 public:
@@ -39,25 +40,31 @@ public:
     pEvent->_createdFromBuffer = false;
     return pEvent;
   }
-
-  template<typename T>
-  static T* createEvent(char* pBuffer) {
-    auto* pEvent = reinterpret_cast<Event*>(pBuffer);
+  
+  static Event* createEvent(char* pBuffer_, EventSize eventSize_) {
+    auto pEvent = castEvent(pBuffer_, eventSize_);
     pEvent->_createdFromBuffer = true;
     return pEvent;
   }
   
-  static void releaseEvent(Event* pEvent) {
-    if (pEvent->_createdFromBuffer) {
-      delete [] ((char*)pEvent);
+  static void releaseEvent(Event* pEvent_) {
+    if (pEvent_->_createdFromBuffer) {
+      delete [] ((char*)pEvent_);
     } else {
-      delete pEvent;
+      delete pEvent_;
     }
   }
   
   template<typename T>
-  static T castEvent(Event* pEvent) { return static_cast<T>(pEvent); }
+  static T castEvent(Event* pEvent) { return reinterpret_cast<T>(pEvent); }
 
+  static Event* castEvent(char* pBuffer_, EventSize eventSize_) {
+    *(reinterpret_cast<EventSize*>(pBuffer_)) = eventSize_;
+    auto* pEvent = reinterpret_cast<Event*>(pBuffer_);
+    return pEvent;
+  }
+
+  
   typedef uint16_t EventType;
 
   void size(uint16_t u_)        { _size = u_; }
@@ -77,6 +84,8 @@ public:
   bool isContextEvent() { return isContextEvent(eventType()); }
   bool isUIEvent()      { return isUIEvent     (eventType()); }
   bool isTickEvent()    { return isTickEvent   (eventType()); }
+  
+  const char* asCharBuffer() { return reinterpret_cast<char*>(this); }
 
   /*
   std::string_view name() {
@@ -108,6 +117,8 @@ private:
   bool      _createdFromBuffer = false; // for memory mgmt
   
 };
+
+//EventClass(HeaderEvent)
 
 using EventPtr=core::Event*;
 

@@ -17,7 +17,6 @@
 #include <netinet/in.h> //IPPROTO_TCP
 #include <string.h> // memset
 #include <unistd.h> // close
-//#include <string_view>
 #include <fcntl.h>
 #include <errno.h>
 
@@ -91,7 +90,7 @@ bool ServerSocket::acceptClient() {
   char clientName[INET_ADDRSTRLEN];
   inet_ntop(AF_INET, &clntAddr.sin_addr, clientName, INET_ADDRSTRLEN);
   
-  std::cout << "Accept client:" << clientName << ":" << ntohs(clntAddr.sin_port) << "\n" ;
+  std::cout << "Accept client " << clientName << ":" << ntohs(clntAddr.sin_port) << "\n" ;
   
   return true;
 }
@@ -99,10 +98,13 @@ bool ServerSocket::acceptClient() {
 ServerSocket::~ServerSocket() {
   close(_servSocket);
   close(_clientConnection);
+  _servSocket = -1;
+  _clientConnection = -1;
 }
 
 ClientSocket::~ClientSocket() {
   close(_clntSocket);
+  _clntSocket = -1;
 }
 
 
@@ -132,18 +134,22 @@ bool ClientSocket::connect(const std::string_view host_, uint16_t port_) {
   return true;
 }
 
-USocket::SOCKET_RC ServerSocket::receiveBuffer(char** ppBuffer) {
+USocket::SOCKET_RC ServerSocket::receiveBuffer(char** ppBuffer, BufferSize& outSize_) {
 
-  uint16_t bufferSize = 0;
+  BufferSize bufferSize = 0;
   long ret = ::recv(_clientConnection, &bufferSize, 2, 0);
   
   if (ret==0) return SOCKET_RC::DISCONNECTED;
   if (ret==-1) return SOCKET_RC::NO_DATA;
-  if (bufferSize==0) return NO_DATA;
+
+  uint8_t offset = sizeof(BufferSize);
+  if (bufferSize <= offset) {
+    assert(false && "invalid message");
+  }
 
   char* buffer = new char[bufferSize];
-  *(reinterpret_cast<uint16_t*>(&(buffer[0]))) = bufferSize;
-  ret = ::recv(_clientConnection, &(buffer[2]), bufferSize-2, 0);
+  //*(reinterpret_cast<uint16_t*>(buffer)) = bufferSize;
+  ret = ::recv(_clientConnection, buffer+offset, bufferSize-offset, 0);
 
   if (ret==0) {
     delete [] buffer;
@@ -154,6 +160,7 @@ USocket::SOCKET_RC ServerSocket::receiveBuffer(char** ppBuffer) {
     return SOCKET_RC::NO_DATA;
   }
 
+  outSize_ = bufferSize;
   *ppBuffer = buffer;
   return SOCKET_RC::SUCCESS;
 }

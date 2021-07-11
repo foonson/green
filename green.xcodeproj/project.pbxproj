@@ -18,6 +18,9 @@
 		AAB631072675012C00674E83 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB631062675012C00674E83 /* main.cpp */; };
 		AAB631142675016500674E83 /* busstop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB631132675016500674E83 /* busstop.cpp */; };
 		AAD10B00267BB697006161CC /* TeUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAD10AFE267BACA9006161CC /* TeUI.cpp */; };
+		AADD49152699C9C70073C271 /* Dropcopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AADD49132699C9C70073C271 /* Dropcopy.cpp */; };
+		AADD49162699C9C70073C271 /* Dropcopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AADD49132699C9C70073C271 /* Dropcopy.cpp */; };
+		AADD49172699C9C70073C271 /* Dropcopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AADD49132699C9C70073C271 /* Dropcopy.cpp */; };
 		AAF41B90268B79E300CF8099 /* USocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF41B8E268B79E300CF8099 /* USocket.cpp */; };
 		AAF41B91268B79E300CF8099 /* USocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF41B8E268B79E300CF8099 /* USocket.cpp */; };
 		AAF41B92268B79E300CF8099 /* USocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF41B8E268B79E300CF8099 /* USocket.cpp */; };
@@ -59,6 +62,7 @@
 		AA10A81B2684CE7A007CDBA3 /* UTime.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = UTime.cpp; sourceTree = "<group>"; tabWidth = 2; };
 		AA10A81C2684CE7A007CDBA3 /* UTime.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = UTime.h; sourceTree = "<group>"; tabWidth = 2; };
 		AA18D6412695533E00BC8187 /* Monitor.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Monitor.h; sourceTree = "<group>"; tabWidth = 2; };
+		AA25ABD9269AEA660040728F /* Reader.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Reader.h; sourceTree = "<group>"; tabWidth = 2; };
 		AA6C6CF3267718A5004399DB /* tetris */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tetris; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA6C6CF5267718A5004399DB /* tetris.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = tetris.cpp; sourceTree = "<group>"; tabWidth = 2; };
 		AAA088F726838F8200CD05C1 /* TeReadme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TeReadme.txt; sourceTree = "<group>"; };
@@ -86,6 +90,8 @@
 		AAD10AFE267BACA9006161CC /* TeUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TeUI.cpp; sourceTree = "<group>"; };
 		AAD10AFF267BACA9006161CC /* TeUI.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeUI.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAD458D2269089BC003DB668 /* Config.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; tabWidth = 2; };
+		AADD49132699C9C70073C271 /* Dropcopy.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = Dropcopy.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		AADD49142699C9C70073C271 /* Dropcopy.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Dropcopy.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAED438E269008450025246B /* .zshrc */ = {isa = PBXFileReference; lastKnownFileType = text; path = .zshrc; sourceTree = "<group>"; };
 		AAED4390269027210025246B /* TeConfig.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeConfig.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAF41B8E268B79E300CF8099 /* USocket.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = USocket.cpp; sourceTree = "<group>"; tabWidth = 2; };
@@ -205,6 +211,9 @@
 				AAC4C2462684C3840026DD88 /* Event.h */,
 				AAD458D2269089BC003DB668 /* Config.h */,
 				AA18D6412695533E00BC8187 /* Monitor.h */,
+				AADD49132699C9C70073C271 /* Dropcopy.cpp */,
+				AADD49142699C9C70073C271 /* Dropcopy.h */,
+				AA25ABD9269AEA660040728F /* Reader.h */,
 			);
 			path = core;
 			sourceTree = "<group>";
@@ -340,6 +349,7 @@
 				AAD10B00267BB697006161CC /* TeUI.cpp in Sources */,
 				AAA1608026772FB80027943C /* TeApp.cpp in Sources */,
 				AAF41B92268B79E300CF8099 /* USocket.cpp in Sources */,
+				AADD49172699C9C70073C271 /* Dropcopy.cpp in Sources */,
 				AA10A81D2684D580007CDBA3 /* UTime.cpp in Sources */,
 				AA10A8152684CA82007CDBA3 /* UCPU.cpp in Sources */,
 				AA6C6CF6267718A5004399DB /* tetris.cpp in Sources */,
@@ -352,6 +362,7 @@
 			files = (
 				AA10A8192684CBF4007CDBA3 /* UCPU.cpp in Sources */,
 				AAB631072675012C00674E83 /* main.cpp in Sources */,
+				AADD49152699C9C70073C271 /* Dropcopy.cpp in Sources */,
 				AAF41B90268B79E300CF8099 /* USocket.cpp in Sources */,
 				AA10A81F2684D581007CDBA3 /* UTime.cpp in Sources */,
 			);
@@ -363,6 +374,7 @@
 			files = (
 				AA10A8182684CBF3007CDBA3 /* UCPU.cpp in Sources */,
 				AAB631142675016500674E83 /* busstop.cpp in Sources */,
+				AADD49162699C9C70073C271 /* Dropcopy.cpp in Sources */,
 				AAF41B91268B79E300CF8099 /* USocket.cpp in Sources */,
 				AA10A81E2684D581007CDBA3 /* UTime.cpp in Sources */,
 			);
