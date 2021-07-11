@@ -11,7 +11,6 @@
 
 namespace tetris {
 
-
 void TeApp::evaluateTimer() {
   if (!config().isServer()) { return ; }
 

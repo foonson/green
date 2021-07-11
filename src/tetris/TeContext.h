@@ -8,15 +8,15 @@
 #ifndef TeContext_hpp
 #define TeContext_hpp
 
-#include "core/AppContext.h"
+#include "core/Context.h"
 #include "TeEvent.h"
 
 namespace tetris {
 
-class TeContext : public core::AppContext<TeContext> {
+class TeContext : public core::Context<TeContext> {
 public:
   
-  typedef core::AppContext<TeContext> Base;
+  typedef core::Context<TeContext> Base;
   
   void updateContext(core::Event* pBaseEvent) {
     switch(pBaseEvent->handle()) {

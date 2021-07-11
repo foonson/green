@@ -33,10 +33,10 @@ class App {
   
 public:
   
-  using TContext=typename TAppTraits::TContext;
-  using  TConfig=typename TAppTraits::TConfig;
-  using      TUI=typename TAppTraits::TUI;
-  using   TEvent=typename TAppTraits::TEvent; // for event display
+  using       TContext=typename TAppTraits::TContext;
+  using        TConfig=typename TAppTraits::TConfig;
+  using            TUI=typename TAppTraits::TUI;
+  using TEventFunctors=typename TAppTraits::TEventFunctors;
 
   using QueueElement=core::EventPtr;
   using EventQueue=boost::lockfree::spsc_queue
@@ -157,7 +157,7 @@ public:
   }
   
   bool forwardEvent(core::EventPtr pEvent) {
-    // Forward the context/UI event from drop to queue
+    // Forward the context/UI event from dropcopy to queue
     if (!pEvent->isFromDropcopy()) { return false ;}
     
     if (pEvent->isContextEvent()) {
@@ -199,10 +199,9 @@ public:
         
         pEvent->isFromDropcopy(true);
 
-        auto* tpEvent = core::Event::castEvent<TEvent*>(pEvent);
-        std::string_view eventName = tpEvent->name();
+        std::string_view eventName = eventFunctors().eventName(pEvent);
         
-        std::cout << util::UCPU::cpuTick() << "[" << tpEvent->dcSeqno() << "]: Receive " << eventName << " " << tpEvent->size() << " bytes\n";
+        std::cout << util::UCPU::cpuTick() << "[" << pEvent->dcSeqno() << "]: Receive " << eventName << " " << pEvent->size() << " bytes\n";
 
         if (pEvent->isContextEvent() ||
             pEvent->isUIEvent())
@@ -372,6 +371,7 @@ public:
   auto    tickPerMilli() { return _tickPerMilli;   }
   auto&        monitor() { return _monitor;        }
   auto&       dropcopy() { return _dropcopy;       }
+  auto&  eventFunctors() { return _eventFunctors;  }
   
 private:
   bool       _exitFlag = false;
@@ -385,6 +385,7 @@ private:
   TConfig    _config;
   Dropcopy   _dropcopy;
   Monitor    _monitor;
+  TEventFunctors _eventFunctors;
 
   util::ServerSocket _netServer;
   util::ClientSocket _netClient; // TODO: multiple client

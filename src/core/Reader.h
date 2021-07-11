@@ -17,12 +17,13 @@ template<typename TAppTraits>
 class Reader {
 public:
 
-  using   TEvent=typename TAppTraits::TEvent; // for event display
-
+  using TEventFunctors=typename TAppTraits::TEventFunctors;
   
   void readJournal(std::string_view journalPathName_) {
 
     std::ifstream js(journalPathName_);
+    
+    TEventFunctors functors;
     
     EventSize eventSize = 0;
     char buffer[100]; //TODO: 
@@ -40,8 +41,10 @@ public:
       }
 
       auto* pEvent = core::Event::castEvent(buffer, eventSize);
-      auto* ptEvent = core::Event::castEvent<TEvent*>(pEvent);
-      std::cout << ptEvent->dcSeqno() << " " << ptEvent->size() << "bytes " << ptEvent->eventType() << " " << ptEvent->name()  << "\n";
+      
+      functors.journal(pEvent);
+      auto eventName = functors.eventName(pEvent);
+      std::cout << pEvent->dcSeqno() << " " << pEvent->size() << "bytes " << pEvent->eventType() << " " << eventName << "\n";
 
     } while (true);
 

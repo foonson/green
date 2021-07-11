@@ -18,10 +18,10 @@
 namespace tetris {
 
 struct TeAppTraits {
-  using  TConfig=tetris::TeConfig;
-  using TContext=tetris::TeContext;
-  using      TUI=tetris::TeUI;
-  using   TEvent=tetris::TeEvent;
+  using        TConfig=tetris::TeConfig;
+  using       TContext=tetris::TeContext;
+  using            TUI=tetris::TeUI;
+  using TEventFunctors=tetris::TeEventFunctors;
 };
 
 class TeApp : public core::App<TeApp, TeAppTraits > {

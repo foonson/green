@@ -12,7 +12,7 @@
 namespace core {
 
 template<typename T>
-class AppContext {
+class Context {
   
 public:
 

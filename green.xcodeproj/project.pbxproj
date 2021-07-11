@@ -72,8 +72,8 @@
 		AAA1607F26772FB80027943C /* TeApp.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeApp.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAA887F02679972600121116 /* Evaluation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Evaluation.h; sourceTree = "<group>"; };
 		AAA887F12679972600121116 /* Evaluation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Evaluation.cpp; sourceTree = "<group>"; };
-		AAAF880E2678CD8500358F0B /* AppContext.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = AppContext.cpp; sourceTree = "<group>"; tabWidth = 2; };
-		AAAF880F2678CD8500358F0B /* AppContext.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = AppContext.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAAF880E2678CD8500358F0B /* Context.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = Context.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		AAAF880F2678CD8500358F0B /* Context.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAAF88102678CDF300358F0B /* TeContext.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TeContext.cpp; sourceTree = "<group>"; };
 		AAAF88112678CDF300358F0B /* TeContext.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeContext.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAAF88122678D0F300358F0B /* TeIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TeIncludes.h; sourceTree = "<group>"; };
@@ -203,8 +203,8 @@
 				AAB6311B267501F200674E83 /* includes.h */,
 				AAA1607C26772E0F0027943C /* App.h */,
 				AAA1607D26772E800027943C /* SDLUI.h */,
-				AAAF880E2678CD8500358F0B /* AppContext.cpp */,
-				AAAF880F2678CD8500358F0B /* AppContext.h */,
+				AAAF880E2678CD8500358F0B /* Context.cpp */,
+				AAAF880F2678CD8500358F0B /* Context.h */,
 				AAA887F02679972600121116 /* Evaluation.h */,
 				AAA887F12679972600121116 /* Evaluation.cpp */,
 				AAD10AFD267BABAF006161CC /* UI.h */,
