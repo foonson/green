@@ -21,7 +21,7 @@ struct TeAppTraits {
   using        TConfig=tetris::TeConfig;
   using       TContext=tetris::TeContext;
   using            TUI=tetris::TeUI;
-  using TEventFunctors=tetris::TeEventFunctors;
+  using  TEventFactory=tetris::TeEventFactory;
 };
 
 class TeApp : public core::App<TeApp, TeAppTraits > {

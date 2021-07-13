@@ -22,7 +22,7 @@ public:
     switch(pBaseEvent->handle()) {
       case TeTargetEnum::XY:
       {
-        auto* pEvent = core::Event::castEvent<TeXYEvent*>(pBaseEvent);
+        auto* pEvent = core::EventFactory::castEvent<TeXYEvent*>(pBaseEvent);
         pEvent->apply(_x, _y);
       }
     }

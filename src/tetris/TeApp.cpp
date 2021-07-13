@@ -15,11 +15,11 @@ void TeApp::evaluateTimer() {
   if (!config().isServer()) { return ; }
 
   if (_moveTick.pass()) {
-    auto* pEvent = core::Event::createEvent<TeTickMoveEvent>();    
+    auto* pEvent = eventFactory().createEvent<TeTickMoveEvent>();
     bool b = core::push(evalEvents(), pEvent);
     if (!b) {
       std::cout << "evalEvents().push failure\n";
-      core::Event::releaseEvent(pEvent);
+      core::EventFactory::releaseEvent(pEvent);
     }
   }
 }
@@ -36,7 +36,7 @@ void TeApp::evaluateMove(core::EventPtr pEvent) {
   auto& rctx = context();
   
   auto x = rctx._x;
-  auto* xyEvent = core::Event::createEvent<TeXYEvent>();
+  auto* xyEvent = eventFactory().createEvent<TeXYEvent>();
   xyEvent->handle(TeTargetEnum::XY);
 
   xyEvent->_y = 0;
@@ -49,14 +49,14 @@ void TeApp::evaluateMove(core::EventPtr pEvent) {
   auto b = core::push(contextEvents(), xyEvent);
   if (!b) {
     std::cout << "contextEvents().push failure\n";
-    core::Event::releaseEvent(pEvent);
+    core::EventFactory::releaseEvent(pEvent);
   }
 
-  auto* uiEvent = core::Event::createEvent<TeUIEvent>();
+  auto* uiEvent = eventFactory().createEvent<TeUIEvent>();
   b = core::push(uiEvents(), uiEvent);
   if (!b) {
     std::cout << "uiEvents().push failure\n";
-    core::Event::releaseEvent(uiEvent);
+    core::EventFactory::releaseEvent(uiEvent);
   }
   
 }

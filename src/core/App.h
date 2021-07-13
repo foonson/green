@@ -36,7 +36,7 @@ public:
   using       TContext=typename TAppTraits::TContext;
   using        TConfig=typename TAppTraits::TConfig;
   using            TUI=typename TAppTraits::TUI;
-  using TEventFunctors=typename TAppTraits::TEventFunctors;
+  using  TEventFactory=typename TAppTraits::TEventFactory;
 
   using QueueElement=core::EventPtr;
   using EventQueue=boost::lockfree::spsc_queue
@@ -164,7 +164,7 @@ public:
       auto rc = core::push(contextEvents(), pEvent);
       if (!rc) {
         std::cerr << "Drop event - contextEvents";
-        core::Event::releaseEvent(pEvent);
+        core::EventFactory::releaseEvent(pEvent);
       }
       return true;
     }
@@ -173,7 +173,7 @@ public:
       auto rc = core::push(uiEvents(), pEvent);
       if (!rc) {
         std::cerr << "Drop event - uiEvent";
-        core::Event::releaseEvent(pEvent);
+        core::EventFactory::releaseEvent(pEvent);
       }
       return true;
     }
@@ -195,26 +195,26 @@ public:
       EventSize eventSize = 0;
       util::USocket::SOCKET_RC rc = netServer().receiveBuffer(&pBuffer, eventSize);
       if (rc==util::USocket::SOCKET_RC::SUCCESS && pBuffer!=nullptr) {
-        core::Event* pEvent = core::Event::createEvent(pBuffer, eventSize);
+        core::Event* pEvent = eventFactory().createEvent(pBuffer, eventSize);
         
         pEvent->isFromDropcopy(true);
-
-        std::string_view eventName = eventFunctors().eventName(pEvent);
         
-        std::cout << util::UCPU::cpuTick() << "[" << pEvent->dcSeqno() << "]: Receive " << eventName << " " << pEvent->size() << " bytes\n";
+        std::cout << util::UCPU::cpuTick() << " ";//<< "[" << pEvent->dcSeqno() << "]: Receive " << pEvent->eventName() << " " << pEvent->size() << " bytes\n";
+        pEvent->humanReader();
 
+        
         if (pEvent->isContextEvent() ||
             pEvent->isUIEvent())
         {
           auto rc = core::push(evalEvents(), pEvent);
           if (!rc) {
             std::cerr << "Drop event - evalEvents\n";
-            core::Event::releaseEvent(pEvent);
+            core::EventFactory::releaseEvent(pEvent);
           }
 
         } else {
-          std::cout << "Discard " << eventName << "\n";
-          core::Event::releaseEvent(pEvent);
+          std::cout << "Discard " << pEvent->eventName() << "\n";
+          core::EventFactory::releaseEvent(pEvent);
         }
       }
 
@@ -237,10 +237,10 @@ public:
           auto rc = core::push(dropcopyEvents(), pEvent);
           if (!rc) {
             std::cerr << "Drop event - dropcopyEvents 1\n";
-            core::Event::releaseEvent(pEvent);
+            core::EventFactory::releaseEvent(pEvent);
           }
         } else {
-          core::Event::releaseEvent(pEvent);
+          core::EventFactory::releaseEvent(pEvent);
         }
       } while (true);
       
@@ -254,11 +254,11 @@ public:
           auto rc = core::push(dropcopyEvents(), pEvent);
           if (!rc) {
             std::cerr << "Drop event - dropcopyEvents 2\n";
-            core::Event::releaseEvent(pEvent);
+            core::EventFactory::releaseEvent(pEvent);
           }
 
         } else {
-          core::Event::releaseEvent(pEvent);
+          core::EventFactory::releaseEvent(pEvent);
         }
       } while (true);
       
@@ -284,10 +284,10 @@ public:
           auto rc = core::push(dropcopyEvents(), pEvent);
           if (!rc) {
             std::cerr << "Drop event - dropcopyEvents 3\n";
-            core::Event::releaseEvent(pEvent);
+            core::EventFactory::releaseEvent(pEvent);
           }
         } else {
-          core::Event::releaseEvent(pEvent);
+          core::EventFactory::releaseEvent(pEvent);
         }
 
       } while(true);
@@ -316,7 +316,7 @@ public:
         dropcopy().dropcopy(pEvent, netClient());
         
         // release event
-        core::Event::releaseEvent(pEvent);
+        core::EventFactory::releaseEvent(pEvent);
       }
     }
   }
@@ -371,7 +371,7 @@ public:
   auto    tickPerMilli() { return _tickPerMilli;   }
   auto&        monitor() { return _monitor;        }
   auto&       dropcopy() { return _dropcopy;       }
-  auto&  eventFunctors() { return _eventFunctors;  }
+  auto&   eventFactory() { return _eventFactory;   }
   
 private:
   bool       _exitFlag = false;
@@ -385,7 +385,7 @@ private:
   TConfig    _config;
   Dropcopy   _dropcopy;
   Monitor    _monitor;
-  TEventFunctors _eventFunctors;
+  TEventFactory _eventFactory;
 
   util::ServerSocket _netServer;
   util::ClientSocket _netClient; // TODO: multiple client

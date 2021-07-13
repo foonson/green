@@ -10,11 +10,7 @@
 
 #include "core/Event.h"
 #include <boost/preprocessor.hpp>
-#include <cassert>
-#include <unordered_map>
-
-//#define TEEVENT_CASE_ETOSTRING(r, d, EVENT) \
-//case BOOST_PP_CAT(E,EVENT) : return BOOST_PP_STRINGIZE( EVENT );
+//#include <cassert>
 
 #define AllTeEvents \
   (TeXYEvent) \
@@ -37,18 +33,10 @@ enum ETeEvent : core::EventType {
 
 class TeEvent : public core::Event {
 public:
-  /*
-  static std::string_view name(uint16_t eventType_) {
-    switch(eventType_) {
-        BOOST_PP_SEQ_FOR_EACH(TEEVENT_CASE_ETOSTRING, TeEvent, AllTeEvents) ;
-      default:
-        assert(false && "unknown event");
-        return "Unknown";
-    }
-  }
-*/
-  static void journal(core::Event* pRawEvent) {
-    //std::cout << "functor\n";
+  
+  static void humanReader(core::Event* pRawEvent) {
+    humanReaderPrefix(pRawEvent);
+    std::cout << "\n";
   }
 };
 
@@ -59,8 +47,9 @@ EventClass(TeXYEvent, TeEvent)
     y_ = _y;
   }
 
-  static void journal(core::Event* pRawEvent) {
-    auto* pEvent = castEvent<TeXYEvent*>(pRawEvent);
+  static void humanReader(core::Event* pRawEvent) {
+    auto* pEvent = core::EventFactory::castEvent<TeXYEvent*>(pRawEvent);
+    humanReaderPrefix(pRawEvent);
     std::cout << "x=" << pEvent->_x << " y=" << pEvent->_y << "\n";
   }
 
@@ -77,36 +66,12 @@ EventClass(TeTickMoveEvent, TeEvent)
 };
 
 
-#define TeEvent_Setup_Functor(r, d, EVENT) { \
-  TeEventFunctor functor;                    \
-  functor.journal   = EVENT::journal;        \
-  functor.eventName = EVENT::eventName;      \
-  _functors[ BOOST_PP_CAT(E,EVENT) ] = functor; \
-}
-
-struct TeEventFunctor {
-  void             (*journal)   (core::Event* pEvent);
-  std::string_view (*eventName) ();
-};
-
-class TeEventFunctors {
+class TeEventFactory : public core::EventFactory {
   
 public:
-  TeEventFunctors() {
-    BOOST_PP_SEQ_FOR_EACH(TeEvent_Setup_Functor, TeEvent, AllTeEvents) ;
+  TeEventFactory() {
+    BOOST_PP_SEQ_FOR_EACH(Event_Setup_Functor, core::Event, AllTeEvents) ;
   }
-  
-  auto eventName(const core::Event* pEvent) {
-    return _functors[pEvent->eventType()].eventName();
-  }
-
-  auto journal(core::Event* pEvent) {
-    return _functors[pEvent->eventType()].journal(pEvent);
-  }
-
-private:
-  
-  std::unordered_map<core::EventType, TeEventFunctor> _functors;
 };
 
 
