@@ -40,7 +40,7 @@ public:
     return true;
   }
   
-  bool mode() { return _mode; }
+  auto mode() { return _mode; }
   
   bool needDropcopy() { return mode()!=ConfigAsReader; }
   
@@ -52,7 +52,7 @@ public:
 
   std::string _connectHost = "127.0.0.1";
   std::string _listenHost = "127.0.0.1";
-  std::string _journalPathName = "/Users/steve/green/tetris.journal";
+  std::string _journalPathName = "/Users/steve/green/tetris.master.journal";
   uint16_t    _connectPort;
   uint16_t    _listenPort;
   ConfigMode  _mode;

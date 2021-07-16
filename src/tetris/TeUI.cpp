@@ -13,12 +13,15 @@ namespace tetris {
 void TeUI::renderFrame(SDL_Renderer* pRenderer_, core::Event* pEvent_) {
 
   //SDL_RenderCopy(pRenderer, _pTxBackground, NULL, NULL);
-  auto& rctx = TeApp::app().context();
+  auto& ctx = TeApp::app().context();
       
+  // TODO: all players
   SDL_SetRenderDrawColor(pRenderer_, 100, 100, 100, 0);
   SDL_Rect rect;
-  rect.x = rctx._x;
-  rect.y = rctx._y;
+  core::Handle hPlayer = 0;
+  auto xy = ctx.getXYPtr(hPlayer);
+  rect.x = *std::get<0>(xy);
+  rect.y = *std::get<1>(xy);
   rect.w = 100;
   rect.h = 100;
   //printf("%d %d %d %d\n", rect.x, rect.y, rect.w, rect.h);

@@ -21,6 +21,7 @@ public:
   
   void readJournal(std::string_view journalPathName_) {
 
+    std::cout << journalPathName_ << "\n";
     std::ifstream js(journalPathName_);
     
     TEventFactory factory;

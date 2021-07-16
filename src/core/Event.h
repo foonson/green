@@ -50,27 +50,42 @@ struct EventFunctor {
   std::string_view (*eventName)   ();
 };
 
+#define FLAG_ACCESSER(FLAG_TYPE)    \
+  bool FLAG_TYPE () const  { return (_flag & Flag_##FLAG_TYPE) == Flag_##FLAG_TYPE; } \
+  void FLAG_TYPE (bool u_) {          \
+    if (u_) {                       \
+      _flag |= Flag_ ## FLAG_TYPE;  \
+    } else {                        \
+      _flag &= !Flag_ ## FLAG_TYPE; \
+    }                               \
+  }                                 \
+
 class Event {
+
+private:
+  using Flag=uint32_t;
+  const static Flag Flag_isFromDropcopy     = 1;
+  const static Flag Flag_createdFromBuffer  = 1 << 1;
+
 public:
   Event();
+
+  FLAG_ACCESSER(createdFromBuffer)
+  FLAG_ACCESSER(isFromDropcopy)
 
   void size(uint16_t u_)        { _size = u_; }
   void eventType(EventType u_)  { _eventType = u_; }
   void tick(uint64_t u_)        { _tick = u_; }
   void handle(Handle u_)        { _handle = u_; }
-  void isFromDropcopy(bool u_)  { _isFromDropcopy = u_; }
   void dcSeqno(uint32_t u_)     { _dcSeqno = u_; }
   void setFunctorPtr(EventFunctor* f_) { _functorPtr = f_; }
-  void createdFromBuffer(bool u_) { _createdFromBuffer = u_; }
 
   auto size()           const { return _size; }
   auto eventType()      const { return _eventType; }
   auto tick()           const { return _tick; }
   auto handle()         const { return _handle; }
-  auto isFromDropcopy() const { return _isFromDropcopy; }
   auto dcSeqno()        const { return _dcSeqno; }
   auto functorPtr()     const { return _functorPtr; }
-  auto createdFromBuffer() const { return _createdFromBuffer; }
 
   bool isContextEvent() const { return isContextEvent(eventType()); }
   bool isUIEvent()      const { return isUIEvent     (eventType()); }
@@ -102,7 +117,10 @@ public:
   }
   
   static void humanReaderPrefix(Event* pEvent) {
-    std::cout << pEvent->tick() << " [" << pEvent->dcSeqno() << "] " << pEvent->size() << "bytes "  << " " << pEvent->eventName() << " ";
+    std::cout << pEvent->tick()
+      << " [" << pEvent->dcSeqno() << "] "
+      << pEvent->size() << "bytes "
+      << pEvent->eventName() << " ";
   }
   
 private:
@@ -111,8 +129,8 @@ private:
   uint32_t  _dcSeqno   = 0;
   uint64_t  _tick      = 0;
   Handle    _handle    = 0;
-  bool      _isFromDropcopy = false;
-  bool      _createdFromBuffer = false; // for memory mgmt
+  
+  Flag  _flag      = 0;
   
   // virtual pointer to manual virtual table
   EventFunctor* _functorPtr = nullptr;

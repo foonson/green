@@ -26,8 +26,12 @@ bool Dropcopy::dropcopy(core::Event* pEvent, util::ClientSocket& client_) {
   //auto tid=std::this_thread::get_id();
   pEvent->dcSeqno(_dcSeqno++);
   client_.sendBuffer(pEvent, pEvent->size());
-  std::cout << util::UCPU::cpuTick() << " "; // << "[" << pEvent->dcSeqno() << "]: Send " << eventName << " " << std::dec << pEvent->size() << "bytes\n";
-  pEvent->humanReader();
+  
+  if (_dcSeqno%100==0) {
+    std::cout << _dcSeqno << "\n";
+  }
+  //std::cout << util::UCPU::cpuTick() << " ";
+  //pEvent->humanReader();
   
   journalStream().write(pEvent->asCharBuffer(), pEvent->size());
   journalStream().flush(); // TODO: not working

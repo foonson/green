@@ -96,7 +96,7 @@ public:
       return false;
     }
 
-    netServer().listen(config().listenHost(), config().listenPort()); // TODO:
+    netListener().listen(config().listenHost(), config().listenPort()); // TODO:
 
     return true;
   }
@@ -153,7 +153,6 @@ public:
   
   void evaluateTimer() {
     app().evaluateTimer();
-
   }
   
   bool forwardEvent(core::EventPtr pEvent) {
@@ -190,19 +189,18 @@ public:
       ui().pollInput();
       
     // IO
-      netServer().acceptClient();
+      netListener().acceptClient();
       char* pBuffer = nullptr;
       EventSize eventSize = 0;
-      util::USocket::SOCKET_RC rc = netServer().receiveBuffer(&pBuffer, eventSize);
+      util::USocket::SOCKET_RC rc = netListener().receiveBuffer(&pBuffer, eventSize);
       if (rc==util::USocket::SOCKET_RC::SUCCESS && pBuffer!=nullptr) {
         core::Event* pEvent = eventFactory().createEvent(pBuffer, eventSize);
         
         pEvent->isFromDropcopy(true);
         
-        std::cout << util::UCPU::cpuTick() << " ";//<< "[" << pEvent->dcSeqno() << "]: Receive " << pEvent->eventName() << " " << pEvent->size() << " bytes\n";
-        pEvent->humanReader();
+        //std::cout << util::UCPU::cpuTick() << " ";//<< "[" << pEvent->dcSeqno() << "]: Receive " << pEvent->eventName() << " " << pEvent->size() << " bytes\n";
+        //pEvent->humanReader();
 
-        
         if (pEvent->isContextEvent() ||
             pEvent->isUIEvent())
         {
@@ -248,7 +246,7 @@ public:
       do {
         EventPtr pEvent;
         if(!contextEvents().pop(pEvent)) { break; }
-        context().updateContext(pEvent); //TODO
+        app().updateContext(pEvent); //TODO
         
         if (!pEvent->isFromDropcopy()) {
           auto rc = core::push(dropcopyEvents(), pEvent);
@@ -300,7 +298,7 @@ public:
     // Server connection
     int i=0;
     while (!exitFlag()) {
-      if (netClient().connect(config().connectHost(), config().connectPort()))
+      if (netSender().connect(config().connectHost(), config().connectPort()))
       {
         break;
       }
@@ -313,7 +311,7 @@ public:
     while (!_exitFlag) {
       EventPtr pEvent;
       if (dropcopyEvents().pop(pEvent)) {
-        dropcopy().dropcopy(pEvent, netClient());
+        dropcopy().dropcopy(pEvent, netSender());
         
         // release event
         core::EventFactory::releaseEvent(pEvent);
@@ -327,6 +325,9 @@ public:
     ui().shutdown();
     context().shutdown();
     if (config().needDropcopy()) { dropcopy().shutdown(); }
+    
+    uint64_t endTick = util::UCPU::cpuTick();
+    std::cout << (endTick - _startTick) / _tickPerMilli << "ms\n";
     return true;
   }
   
@@ -366,8 +367,8 @@ public:
   auto&       uiEvents() { return _uiEvents;       }
   auto&  contextEvents() { return _contextEvents;  }
   auto& dropcopyEvents() { return _dropcopyEvents; }
-  auto&      netClient() { return _netClient;      }
-  auto&      netServer() { return _netServer;      }
+  auto&      netSender() { return _netSender;      }
+  auto&    netListener() { return _netListener;    }
   auto    tickPerMilli() { return _tickPerMilli;   }
   auto&        monitor() { return _monitor;        }
   auto&       dropcopy() { return _dropcopy;       }
@@ -387,8 +388,8 @@ private:
   Monitor    _monitor;
   TEventFactory _eventFactory;
 
-  util::ServerSocket _netServer;
-  util::ClientSocket _netClient; // TODO: multiple client
+  util::ServerSocket _netListener;
+  util::ClientSocket _netSender; // TODO: multiple client
   
   EventQueue _evalEvents;
   EventQueue _contextEvents;

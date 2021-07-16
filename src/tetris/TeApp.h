@@ -42,8 +42,8 @@ public:
   }
 
   void evaluateTimer();
-  void evaluateMove(core::EventPtr pEvent);
   void evaluate(core::EventPtr pEvent);
+  void updateContext(core::Event* pEvent);
 
 private:
   util::Tick _moveTick;

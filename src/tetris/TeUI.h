@@ -14,7 +14,6 @@
 
 namespace tetris {
 
-
 class TeUI : public core::SDLUI<TeUI> {
 public:
   std::string_view windowTitle() ;

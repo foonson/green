@@ -8,6 +8,7 @@
 #include "TeApp.h"
 #include <memory>
 #include "util/UCPU.h"
+#include "TeEvalMove.h"
 
 namespace tetris {
 
@@ -16,6 +17,8 @@ void TeApp::evaluateTimer() {
 
   if (_moveTick.pass()) {
     auto* pEvent = eventFactory().createEvent<TeTickMoveEvent>();
+    uint32_t PLAYER0 = 0;
+    pEvent->handle(PLAYER0);
     bool b = core::push(evalEvents(), pEvent);
     if (!b) {
       std::cout << "evalEvents().push failure\n";
@@ -25,41 +28,23 @@ void TeApp::evaluateTimer() {
 }
 
 void TeApp::evaluate(core::EventPtr pEvent) {
-
   switch(pEvent->eventType()) {
-    case ETeTickMoveEvent: { return evaluateMove(pEvent);  }
+    case ETeTickMoveEvent: { return TeEvalMove::evaluate(pEvent);  }
   }
-
 }
 
-void TeApp::evaluateMove(core::EventPtr pEvent) {
-  auto& rctx = context();
-  
-  auto x = rctx._x;
-  auto* xyEvent = eventFactory().createEvent<TeXYEvent>();
-  xyEvent->handle(TeTargetEnum::XY);
-
-  xyEvent->_y = 0;
-  if (x<800) {
-    xyEvent->_x = x + 1;
-  } else {
-    xyEvent->_x = 0;
+void TeApp::updateContext(core::EventPtr pBaseEvent) {
+  switch(pBaseEvent->eventType()) {
+    case ETeXYEvent:
+    {
+      auto* pEvent = core::EventFactory::castEvent<TeXYEvent*>(pBaseEvent);
+      TeEvalMove::updateContext(pEvent);
+    }
   }
-  
-  auto b = core::push(contextEvents(), xyEvent);
-  if (!b) {
-    std::cout << "contextEvents().push failure\n";
-    core::EventFactory::releaseEvent(pEvent);
-  }
-
-  auto* uiEvent = eventFactory().createEvent<TeUIEvent>();
-  b = core::push(uiEvents(), uiEvent);
-  if (!b) {
-    std::cout << "uiEvents().push failure\n";
-    core::EventFactory::releaseEvent(uiEvent);
-  }
-  
 }
+
+
+
 
 
 }

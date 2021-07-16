@@ -42,11 +42,6 @@ public:
 
 EventClass(TeXYEvent, TeEvent)
 
-  void apply(uint16_t& x_, uint16_t& y_) {
-    x_ = _x;
-    y_ = _y;
-  }
-
   static void humanReader(core::Event* pRawEvent) {
     auto* pEvent = core::EventFactory::castEvent<TeXYEvent*>(pRawEvent);
     humanReaderPrefix(pRawEvent);

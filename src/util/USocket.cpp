@@ -47,7 +47,7 @@ bool ServerSocket::listen(const std::string_view host_, uint16_t port_) {
   }
   
   if (_nonBlock) {
-    std::cout << "nonblock\n";
+    std::cout << "nonblock socket\n";
     int ret = fcntl(_servSocket, F_SETFL, O_NONBLOCK);
     if (ret<0) {
       std::cerr << "Server fcntl O_NONBLOCK failure. " << strerror(errno) << "\n" ;

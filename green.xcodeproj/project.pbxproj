@@ -68,6 +68,7 @@
 		AA25ABD9269AEA660040728F /* Reader.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Reader.h; sourceTree = "<group>"; tabWidth = 2; };
 		AA6C6CF3267718A5004399DB /* tetris */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tetris; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA6C6CF5267718A5004399DB /* tetris.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = tetris.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		AA84810026A1F9D700A6CFF3 /* TeEvalMove.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeEvalMove.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAA088F726838F8200CD05C1 /* TeReadme.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TeReadme.txt; sourceTree = "<group>"; };
 		AAA1607C26772E0F0027943C /* App.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = App.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAA1607D26772E800027943C /* SDLUI.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = SDLUI.h; sourceTree = "<group>"; tabWidth = 2; };
@@ -91,7 +92,7 @@
 		AAC4C2462684C3840026DD88 /* Event.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAC4C2482684C8960026DD88 /* UCPU.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = UCPU.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAD10AFD267BABAF006161CC /* UI.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = UI.h; sourceTree = "<group>"; tabWidth = 2; };
-		AAD10AFE267BACA9006161CC /* TeUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TeUI.cpp; sourceTree = "<group>"; };
+		AAD10AFE267BACA9006161CC /* TeUI.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = TeUI.cpp; sourceTree = "<group>"; tabWidth = 2; };
 		AAD10AFF267BACA9006161CC /* TeUI.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeUI.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAD458D2269089BC003DB668 /* Config.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; tabWidth = 2; };
 		AADD49132699C9C70073C271 /* Dropcopy.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = Dropcopy.cpp; sourceTree = "<group>"; tabWidth = 2; };
@@ -141,6 +142,7 @@
 				AAA088F726838F8200CD05C1 /* TeReadme.txt */,
 				AAC4C2452684C3580026DD88 /* TeEvent.h */,
 				AAED4390269027210025246B /* TeConfig.h */,
+				AA84810026A1F9D700A6CFF3 /* TeEvalMove.h */,
 			);
 			path = tetris;
 			sourceTree = "<group>";

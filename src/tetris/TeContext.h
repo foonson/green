@@ -13,25 +13,34 @@
 
 namespace tetris {
 
+struct TePlayerContext {
+  uint8_t  direction = 0;
+  uint16_t x = 1;
+  uint16_t y = 1;
+};
+
 class TeContext : public core::Context<TeContext> {
 public:
   
   typedef core::Context<TeContext> Base;
+
   
-  void updateContext(core::Event* pBaseEvent) {
-    switch(pBaseEvent->handle()) {
-      case TeTargetEnum::XY:
-      {
-        auto* pEvent = core::EventFactory::castEvent<TeXYEvent*>(pBaseEvent);
-        pEvent->apply(_x, _y);
-      }
-    }
+  TePlayerContext& getPlayerContext(core::Handle hPlayer_) {
+    return _player[hPlayer_];
   }
   
+  auto getXYPtr(core::Handle hPlayer_) {
+    auto& p = getPlayerContext(hPlayer_);
+    return std::tuple<uint16_t*, uint16_t*> {&p.x, &p.y} ;
+  }
+
+  auto getDirectionPtr(core::Handle hPlayer_) {
+    auto& p = getPlayerContext(hPlayer_);
+    return &p.direction ;
+  }
+    
   bool initialize() {
     Base::initialize();
-    _x = 0;
-    _y = 0;
     return true;
   }
   
@@ -39,9 +48,8 @@ public:
     Base::shutdown();
   }
   
-  
-  uint16_t _x = 10;
-  uint16_t _y = 10;
+private:
+  TePlayerContext _player[2];
 };
 
 }
