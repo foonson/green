@@ -10,8 +10,11 @@
 
 #include "core/Context.h"
 #include "TeEvent.h"
+#include "TeAppTraits.h"
 
 namespace tetris {
+
+// TODO: main thread / ui thread synchronization
 
 struct TePlayerContext {
   uint8_t  direction = 0;
@@ -24,7 +27,6 @@ public:
   
   typedef core::Context<TeContext> Base;
 
-  
   TePlayerContext& getPlayerContext(core::Handle hPlayer_) {
     return _player[hPlayer_];
   }
@@ -34,7 +36,7 @@ public:
     return std::tuple<uint16_t*, uint16_t*> {&p.x, &p.y} ;
   }
 
-  auto getDirectionPtr(core::Handle hPlayer_) {
+  auto* getDirectionPtr(core::Handle hPlayer_) {
     auto& p = getPlayerContext(hPlayer_);
     return &p.direction ;
   }
@@ -49,7 +51,7 @@ public:
   }
   
 private:
-  TePlayerContext _player[2];
+  TePlayerContext _player[TeAppTraits::PlayerCount];
 };
 
 }

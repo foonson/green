@@ -13,22 +13,30 @@
 //#include <cassert>
 
 #define AllTeEvents \
-  (TeXYEvent) \
-  (TeUIEvent) \
-  (TeTickMoveEvent)
+  (TeXYEvent)       \
+  (TeDirEvent)      \
+  (TeUIEvent)       \
+  (TeTickMoveEvent) \
+  (TeKeyEvent)      \
+  (TeSystemEvent)
 
 namespace tetris {
 
+/*
 enum TeTargetEnum {
   XY = 1,
 };
+ */
 
 enum ETeEvent : core::EventType {
-  ETeContextEvent  = core::kContextEvent8,
+  ETeContextEvent  = core::kContextEvent9,
   ETeXYEvent,
-  ETeUIEvent       = core::kUIEvent9,
-  ETeTickEvent     = core::kTickEvent10,
+  ETeDirEvent,
+  ETeUIEvent       = core::kUIEvent10,
+  ETeTickEvent     = core::kTickEvent11,
   ETeTickMoveEvent,
+  ETeKeyEvent      = core::kKeyEvent12,
+  ETeSystemEvent   = core::kSystemEvent13,
 };
 
 class TeEvent : public core::Event {
@@ -40,24 +48,59 @@ public:
   }
 };
 
-EventClass(TeXYEvent, TeEvent)
+class_Event(TeDirEvent, TeEvent)
 
   static void humanReader(core::Event* pRawEvent) {
-    auto* pEvent = core::EventFactory::castEvent<TeXYEvent*>(pRawEvent);
+    auto* pEvent = core::EventFactory::castEvent<Type*>(pRawEvent);
     humanReaderPrefix(pRawEvent);
-    std::cout << "x=" << pEvent->_x << " y=" << pEvent->_y << "\n";
+    std::cout << "Player" << pEvent->handle() << " dir=" << pEvent->_direction << "\n";
+  }
+
+public:
+  uint8_t _direction;
+};
+
+
+class_Event(TeXYEvent, TeEvent)
+
+  static void humanReader(core::Event* pRawEvent) {
+    auto* pEvent = core::EventFactory::castEvent<Type*>(pRawEvent);
+    humanReaderPrefix(pRawEvent);
+    std::cout << "Player" << pEvent->handle() << " (" << pEvent->_x << "," << pEvent->_y << ")\n";
   }
 
 public:
   uint16_t _x;
   uint16_t _y;
-
 };
 
-EventClass(TeUIEvent, TeEvent)
+class_Event(TeKeyEvent, TeEvent)
+  static void humanReader(core::Event* pRawEvent) {
+    auto* pEvent = core::EventFactory::castEvent<Type*>(pRawEvent);
+    humanReaderPrefix(pRawEvent);
+    std::cout << "Player" << pEvent->handle() << " " << pEvent->_keyCode << "\n";
+  }
+
+public:
+  SDL_Keycode _keyCode;
 };
 
-EventClass(TeTickMoveEvent, TeEvent)
+class_Event(TeSystemEvent, TeEvent)
+  static void humanReader(core::Event* pRawEvent) {
+    auto* pEvent = core::EventFactory::castEvent<Type*>(pRawEvent);
+    humanReaderPrefix(pRawEvent);
+    std::cout << "Player" << pEvent->handle() << " " << pEvent->_systemAction << "\n";
+  }
+
+public:
+  uint8_t _systemAction;
+};
+
+
+class_Event(TeUIEvent, TeEvent)
+};
+
+class_Event(TeTickMoveEvent, TeEvent)
 };
 
 
@@ -68,7 +111,6 @@ public:
     BOOST_PP_SEQ_FOR_EACH(Event_Setup_Functor, core::Event, AllTeEvents) ;
   }
 };
-
 
 }
 

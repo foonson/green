@@ -61,7 +61,7 @@ public:
     return true;
   }
   
-  bool isServer() { return _isServer; }
+  bool isServer() const { return _isServer; }
   
 private:
   bool _isServer; // TODO: move to core

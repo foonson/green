@@ -151,8 +151,8 @@ public:
                               contextEvents().read_available());
   }
   
-  void evaluateTimer() {
-    app().evaluateTimer();
+  void pollTimer() {
+    app().pollTimer();
   }
   
   bool forwardEvent(core::EventPtr pEvent) {
@@ -186,7 +186,7 @@ public:
       if (!_evalThrottle.pass()) { continue; }
 
     // ui input
-      ui().pollInput();
+      app().pollInput();
       
     // IO
       netListener().acceptClient();
@@ -198,9 +198,6 @@ public:
         
         pEvent->isFromDropcopy(true);
         
-        //std::cout << util::UCPU::cpuTick() << " ";//<< "[" << pEvent->dcSeqno() << "]: Receive " << pEvent->eventName() << " " << pEvent->size() << " bytes\n";
-        //pEvent->humanReader();
-
         if (pEvent->isContextEvent() ||
             pEvent->isUIEvent())
         {
@@ -216,7 +213,8 @@ public:
         }
       }
 
-      evaluateTimer();
+      // Timer
+      pollTimer();
 
       // Evaluate
       do {
@@ -231,13 +229,9 @@ public:
         // application specific evaluation
         app().evaluate(pEvent);
 
-        if (!pEvent->isFromDropcopy()) {
-          auto rc = core::push(dropcopyEvents(), pEvent);
-          if (!rc) {
-            std::cerr << "Drop event - dropcopyEvents 1\n";
-            core::EventFactory::releaseEvent(pEvent);
-          }
-        } else {
+        auto rc = core::push(dropcopyEvents(), pEvent);
+        if (!rc) {
+          std::cerr << "Drop event - dropcopyEvents 1\n";
           core::EventFactory::releaseEvent(pEvent);
         }
       } while (true);
@@ -248,16 +242,12 @@ public:
         if(!contextEvents().pop(pEvent)) { break; }
         app().updateContext(pEvent); //TODO
         
-        if (!pEvent->isFromDropcopy()) {
-          auto rc = core::push(dropcopyEvents(), pEvent);
-          if (!rc) {
-            std::cerr << "Drop event - dropcopyEvents 2\n";
-            core::EventFactory::releaseEvent(pEvent);
-          }
-
-        } else {
+        auto rc = core::push(dropcopyEvents(), pEvent);
+        if (!rc) {
+          std::cerr << "Drop event - dropcopyEvents 2\n";
           core::EventFactory::releaseEvent(pEvent);
         }
+
       } while (true);
       
       healthCheck(false);
@@ -278,13 +268,9 @@ public:
         }
 
         // Resolved TODO: break SPSC
-        if (!pEvent->isFromDropcopy()) {
-          auto rc = core::push(dropcopyEvents(), pEvent);
-          if (!rc) {
-            std::cerr << "Drop event - dropcopyEvents 3\n";
-            core::EventFactory::releaseEvent(pEvent);
-          }
-        } else {
+        auto rc = core::push(dropcopyEvents(), pEvent);
+        if (!rc) {
+          std::cerr << "Drop event - dropcopyEvents 3\n";
           core::EventFactory::releaseEvent(pEvent);
         }
 
@@ -309,13 +295,15 @@ public:
     
     // dropcopy Loop
     while (!_exitFlag) {
-      EventPtr pEvent;
-      if (dropcopyEvents().pop(pEvent)) {
+      do {
+        EventPtr pEvent;
+        if (!dropcopyEvents().pop(pEvent)) { break; }
+        
         dropcopy().dropcopy(pEvent, netSender());
         
         // release event
         core::EventFactory::releaseEvent(pEvent);
-      }
+      } while(true);
     }
   }
   
@@ -359,17 +347,21 @@ public:
     std::signal(SIGPIPE,  &App::signalHandler); // TODO
   }
 
-  auto        exitFlag() { return _exitFlag;       }
+  const auto& config() const { return _config; }
+  auto&       config()       { return _config; }
+
+  auto        exitFlag() const { return _exitFlag; }
+  void     setExitFlag()       { _exitFlag = true; }
+  auto    tickPerMilli() const { return _tickPerMilli; }
+
   auto&        context() { return _context;        }
   auto&             ui() { return _ui;             }
-  auto&         config() { return _config;         }
   auto&     evalEvents() { return _evalEvents;     }
   auto&       uiEvents() { return _uiEvents;       }
   auto&  contextEvents() { return _contextEvents;  }
   auto& dropcopyEvents() { return _dropcopyEvents; }
   auto&      netSender() { return _netSender;      }
   auto&    netListener() { return _netListener;    }
-  auto    tickPerMilli() { return _tickPerMilli;   }
   auto&        monitor() { return _monitor;        }
   auto&       dropcopy() { return _dropcopy;       }
   auto&   eventFactory() { return _eventFactory;   }

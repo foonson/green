@@ -15,21 +15,28 @@
 
 namespace core {
 
+const static SDL_Keycode KEY_UP   =1073741906;
+const static SDL_Keycode KEY_DOWN =1073741905;
+const static SDL_Keycode KEY_LEFT =1073741904;
+const static SDL_Keycode KEY_RIGHT=1073741903;
+const static SDL_Keycode KEY_ESC  =27;
+
 template <typename TUI>
 class SDLUI : public core::UI<SDLUI<TUI>> {
-
-typedef core::UI<SDLUI<TUI>> Base;
+  typedef core::UI<SDLUI<TUI>> Base;
 
 public:
   static const bool REQUIRE_UI_THREAD=true;
-
+  
 public:
   
-  void pollInput() {
-    SDL_Event sdlevent;
-    if (SDL_PollEvent(&sdlevent)==0) {
-      ;
-    }
+  bool pollKeyboard(SDL_Keycode& keyCode_) {
+    SDL_Event sdlEvent;
+    if (SDL_PollEvent(&sdlEvent)==0) { return false; }
+    if (sdlEvent.type!=SDL_KEYDOWN) { return false; }
+    keyCode_ = sdlEvent.key.keysym.sym;
+    return true;
+    
   }
   
   bool initialize() {

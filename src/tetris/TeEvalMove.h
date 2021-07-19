@@ -8,19 +8,27 @@
 #ifndef TeEvalMove_h
 #define TeEvalMove_h
 #include "TeApp.h"
+#include "TeEvaluation.h"
 
 namespace tetris {
 
-class TeEvalMove {
+class TeEvalMove : public TeEvaluation {
 public:
   
-  static auto& app()           { return TeApp::app(); }
-  static auto& context()       { return app().context(); }
-  static auto& eventFactory()  { return app().eventFactory(); }
-  static auto& uiEvents()      { return app().uiEvents(); }
-  static auto& contextEvents() { return app().contextEvents(); }
+  static void pollTimer() {
+    //if (!config().isServer()) { return ; }
 
-  
+    if (app().moveTick().pass()) {
+      auto* pEvent = eventFactory().createEvent<TeTickMoveEvent>();
+      pEvent->handle(app().hPlayer());
+      bool b = core::push(app().evalEvents(), pEvent);
+      if (!b) {
+        std::cout << "evalEvents().push TeTickMoveEvent failure\n";
+        core::EventFactory::releaseEvent(pEvent);
+      }
+    }
+  }
+
   static void evaluate(core::EventPtr pEvent) {
     auto& ctx = context();
     
@@ -38,7 +46,7 @@ public:
       case 0: { xyEvent->_x+=1; break;}
       case 1: { xyEvent->_x-=1; break;}
       case 2: { xyEvent->_y+=1; break;}
-      case 3: { xyEvent->_x-=1; break;}
+      case 3: { xyEvent->_y-=1; break;}
     }
     
     if (xyEvent->_x>800) { xyEvent->_x = 1; }
@@ -61,15 +69,47 @@ public:
     }
   }
 
-  static void updateContext(TeXYEvent* pEvent) {
+  static void updateContext(core::EventPtr pBaseEvent_) {
+    auto* pEvent = core::EventFactory::castEvent<TeXYEvent*>(pBaseEvent_);
     uint16_t* px=nullptr;
     uint16_t* py=nullptr;
-    std::tie(px, py) = TeApp::app().context().getXYPtr(pEvent->handle());
+    std::tie(px, py) = context().getXYPtr(pEvent->handle());
     *px = pEvent->_x;
     *py = pEvent->_y;
   }
+}; // TeEvalMove
 
+class TeEvalDir : public TeEvaluation {
+  public:
+
+  static void evaluateKey(core::EventPtr pBaseEvent_) {
+    auto* pEvent = core::EventFactory::castEvent<TeKeyEvent*>(pBaseEvent_);
+    uint8_t direction = -1;
     
+    switch (pEvent->_keyCode) {
+      case core::KEY_RIGHT: { direction = 0; break; }
+      case core::KEY_LEFT:  { direction = 1; break; }
+      case core::KEY_DOWN:  { direction = 2; break; }
+      case core::KEY_UP:    { direction = 3; break; }
+    }
+
+    if (direction!=-1) {
+      auto* pCtxEvent = eventFactory().createEvent<TeDirEvent>();
+      pCtxEvent->handle(app().hPlayer());
+      pCtxEvent->_direction = direction;
+      bool b = core::push(app().contextEvents(), pCtxEvent);
+      if (!b) {
+        std::cout << "contextEvents().push TeDirEvent failure\n";
+        core::EventFactory::releaseEvent(pEvent);
+      }
+    }
+  }
+
+  static void updateContext(core::EventPtr pBaseEvent_) {
+    auto* pEvent = core::EventFactory::castEvent<TeDirEvent*>(pBaseEvent_);
+    auto* dir = context().getDirectionPtr(pEvent->handle());
+    *dir = pEvent->_direction;
+  }
 };
 }
 

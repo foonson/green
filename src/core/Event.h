@@ -11,11 +11,12 @@
 #include "core/includes.h"
 #include <unordered_map>
 
-#define EventClass(CLASSNAME, BASECLASS) \
+#define class_Event(CLASSNAME, BASECLASS) \
 class CLASSNAME : public BASECLASS { \
 public: \
-  CLASSNAME() { \
-    BASECLASS();  \
+  using Type = CLASSNAME;    \
+  CLASSNAME() {              \
+    BASECLASS();             \
     size(sizeof(CLASSNAME)); \
     eventType(E##CLASSNAME); \
   }                          \
@@ -31,12 +32,16 @@ using Handle=uint32_t;
 using EventSize=uint16_t;
 using EventType=uint16_t;
 
-const EventType  kContextEvent8=0x1 << 9;
-const EventType       kUIEvent9=0x1 << 10;
-const EventType    kTickEvent10=0x1 << 11;
-const EventType   kContextEvent=kContextEvent8;
-const EventType        kUIEvent=kUIEvent9;
-const EventType      kTickEvent=kTickEvent10;
+const EventType  kContextEvent9=0x1 << 9;
+const EventType      kUIEvent10=0x1 << 10;
+const EventType    kTickEvent11=0x1 << 11;
+const EventType     kKeyEvent12=0x1 << 12;
+const EventType  kSystemEvent13=0x1 << 13;
+const EventType   kContextEvent=kContextEvent9;
+const EventType        kUIEvent=kUIEvent10;
+const EventType      kTickEvent=kTickEvent11;
+const EventType       kKeyEvent=kKeyEvent12;
+const EventType    kSystemEvent=kSystemEvent13;
 
 #define Event_Setup_Functor(r, d, EVENT) {   \
   core::EventFunctor functor;                      \
@@ -137,6 +142,8 @@ private:
 
 };
 
+
+// TODO: header event
 //EventClass(HeaderEvent)
 
 using EventPtr=core::Event*;
