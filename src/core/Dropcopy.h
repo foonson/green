@@ -9,15 +9,18 @@
 #define Dropcopy_hpp
 
 #include "core/Event.h"
-#include "util/USocket.h"
+//#include "core/Journal.h"
+//#include "core/Channel.h"
 #include <fstream>
 
 namespace core {
 
+class Channel;
+
 class Dropcopy {
 public:
   bool initialize(std::string_view journalPathName_);
-  bool dropcopy(core::EventPtr pEvent, util::ClientSocket& client_);
+  bool dropcopy(core::EventPtr pEvent, Channel& clientsChannel_);
   bool shutdown();
   
   auto& journalStream() { return _journalStream; }

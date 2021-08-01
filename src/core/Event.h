@@ -23,7 +23,6 @@ public: \
   static std::string_view eventName() { return BOOST_PP_STRINGIZE(CLASSNAME); }
 
 
-
 namespace core {
 
 class Event;
@@ -158,6 +157,28 @@ class EventFactory {
 public:
   friend class Event;
 
+  EventPtr allocateEvent(
+    std::function<bool(char*,EventSize)> fnRead)
+  {
+    EventSize eventSize = 0;
+    if (!fnRead(reinterpret_cast<char*>(&eventSize), sizeof(EventSize))) {
+      return nullptr;
+    }
+
+    // invalid buffer size
+    if (eventSize <= sizeof(EventSize)) {
+      assert(false && "invalid event 1. allocateEvent");
+    }
+    
+    char* buffer = new char[eventSize];
+    if (!fnRead(buffer+sizeof(EventSize), eventSize-sizeof(EventSize))) {
+      assert(false && "invalid event 2. allocateEvent");
+    }
+    
+    auto* pEvent = castEvent(buffer, eventSize);
+    return pEvent;
+  }
+
   template<typename T>
   T* createEvent() {
     auto* pEvent = new T;
@@ -167,11 +188,13 @@ public:
     return pEvent;
   }
   
+  /*
   Event* createEvent(char* pBuffer_, EventSize eventSize_) {
     auto pEvent = castEvent(pBuffer_, eventSize_);
     pEvent->createdFromBuffer(true);
     return pEvent;
   }
+   */
   
   static void releaseEvent(Event* pEvent_) {
     if (pEvent_->createdFromBuffer()) {

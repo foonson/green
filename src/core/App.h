@@ -20,11 +20,9 @@
 #include "core/Event.h"
 #include "core/Monitor.h"
 #include "core/Dropcopy.h"
-#include "core/Reader.h"
-
-// boost
-#include <boost/lockfree/spsc_queue.hpp>
-#include <boost/lockfree/queue.hpp>
+#include "core/Journal.h"
+#include "core/Evaluation.h"
+#include "core/Channel.h"
 
 namespace core {
 
@@ -38,21 +36,18 @@ public:
   using            TUI=typename TAppTraits::TUI;
   using  TEventFactory=typename TAppTraits::TEventFactory;
 
-  using QueueElement=core::EventPtr;
-  using EventQueue=boost::lockfree::spsc_queue
-  <
-    QueueElement,
-    boost::lockfree::capacity<1000>  // TODO:
-  >;
-  using DropcopyQueue=boost::lockfree::queue
-  <
-    QueueElement,
-    boost::lockfree::capacity<1000>  // TODO:
-  >;
-
   static TApp& app() {
     static TApp _gapp;
     return _gapp;
+  }
+  
+  bool recover() {
+    journal().recoverFromJournal(evalEvents(),
+      [this](){
+        evalOnce();
+      }
+    );
+    return true;
   }
   
   bool initialize(int argc_, const char * argv_[]) {
@@ -67,6 +62,18 @@ public:
       return false;
     }
 
+    if (!journal().initialize(
+      config().journalPathName(),
+      eventFactory())
+    ) {
+      std::cerr << "reader initialize failure!\n";
+      return false;
+    }
+    
+    if (config().mode()==TConfig::ConfigAsReader) {
+      return true;
+    }
+    
     if (config().needDropcopy()) {
       if (!dropcopy().initialize(config().journalPathName())) {
         std::cerr << "dropcopy initialize failure!\n";
@@ -84,7 +91,6 @@ public:
     _evalThrottle.tickPerMilli(_tickPerMilli);
     std::cout << "TickPerMilli _uiTick:"   << _uiThrottle.tickPerMilli() << "\n";
     std::cout << "TickPerMilli _evalTick:" << _evalThrottle.tickPerMilli() << "\n";
-
     
     if (!context().initialize()) {
       std::cerr << "context initialize failure!\n";
@@ -96,14 +102,13 @@ public:
       return false;
     }
 
-    netListener().listen(config().listenHost(), config().listenPort()); // TODO:
+    clientsChannel().initializeAsListener(config().listenHost(), config().listenPort());
 
     return true;
   }
   
   void readJournal() {
-    Reader<TAppTraits> reader;
-    reader.readJournal(config().journalPathName());
+    journal().readJournal();
   }
   
   void run() {
@@ -112,6 +117,12 @@ public:
     if (config().mode()==TConfig::ConfigAsReader) {
       return readJournal();
     }
+
+    if (!recover()) {
+      std::cerr << "recover failure!\n";
+      return;
+    }
+    setExitFlag(false);
     
     std::thread uiThread;
     std::thread dropcopyThread;
@@ -140,7 +151,6 @@ public:
         dropcopyThread.join();
       }
     }
-
   }
   
   void healthCheck(bool printSnapShot_) {
@@ -180,6 +190,41 @@ public:
     return false;
   }
   
+  void evalOnce() {
+    // Evaluate
+    while(true) {
+      EventPtr pEvent;
+      if(!evalEvents().pop(pEvent)) { break; }
+
+      // forward event
+      if (forwardEvent(pEvent)) {
+        continue;
+      }
+
+      // application specific evaluation
+      app().evaluate(pEvent);
+
+      auto rc = core::push(dropcopyEvents(), pEvent);
+      if (!rc) {
+        std::cerr << "Drop event - dropcopyEvents 1\n";
+        core::EventFactory::releaseEvent(pEvent);
+      }
+    }
+    
+    // Update context
+    while (true) {
+      EventPtr pEvent;
+      if(!contextEvents().pop(pEvent)) { break; }
+      app().updateContext(pEvent); //TODO
+      
+      auto rc = core::push(dropcopyEvents(), pEvent);
+      if (!rc) {
+        std::cerr << "Drop event - dropcopyEvents 2\n";
+        core::EventFactory::releaseEvent(pEvent);
+      }
+    }
+  }
+  
   void evalLoop() {
     while (!exitFlag()) {
 
@@ -189,13 +234,14 @@ public:
       app().pollInput();
       
     // IO
-      netListener().acceptClient();
-      char* pBuffer = nullptr;
-      EventSize eventSize = 0;
-      util::USocket::SOCKET_RC rc = netListener().receiveBuffer(&pBuffer, eventSize);
-      if (rc==util::USocket::SOCKET_RC::SUCCESS && pBuffer!=nullptr) {
-        core::Event* pEvent = eventFactory().createEvent(pBuffer, eventSize);
+      clientsChannel().acceptClient();
+
+      core::Event* pEvent = eventFactory().allocateEvent(
+        [this](char* buffer_, EventSize size_) -> bool { return clientsChannel().recv(buffer_, size_); }
+      );
+      
         
+      if (pEvent!=nullptr) {
         pEvent->isFromDropcopy(true);
         
         if (pEvent->isContextEvent() ||
@@ -216,40 +262,8 @@ public:
       // Timer
       pollTimer();
 
-      // Evaluate
-      do {
-        EventPtr pEvent;
-        if(!evalEvents().pop(pEvent)) { break; }
+      evalOnce();
 
-        // forward event
-        if (forwardEvent(pEvent)) {
-          continue;
-        }
-
-        // application specific evaluation
-        app().evaluate(pEvent);
-
-        auto rc = core::push(dropcopyEvents(), pEvent);
-        if (!rc) {
-          std::cerr << "Drop event - dropcopyEvents 1\n";
-          core::EventFactory::releaseEvent(pEvent);
-        }
-      } while (true);
-      
-      // Update context
-      do {
-        EventPtr pEvent;
-        if(!contextEvents().pop(pEvent)) { break; }
-        app().updateContext(pEvent); //TODO
-        
-        auto rc = core::push(dropcopyEvents(), pEvent);
-        if (!rc) {
-          std::cerr << "Drop event - dropcopyEvents 2\n";
-          core::EventFactory::releaseEvent(pEvent);
-        }
-
-      } while (true);
-      
       healthCheck(false);
 
     }
@@ -284,7 +298,7 @@ public:
     // Server connection
     int i=0;
     while (!exitFlag()) {
-      if (netSender().connect(config().connectHost(), config().connectPort()))
+      if (clientsChannel().connect(config().connectHost(), config().connectPort()))
       {
         break;
       }
@@ -299,7 +313,7 @@ public:
         EventPtr pEvent;
         if (!dropcopyEvents().pop(pEvent)) { break; }
         
-        dropcopy().dropcopy(pEvent, netSender());
+        dropcopy().dropcopy(pEvent, clientsChannel());
         
         // release event
         core::EventFactory::releaseEvent(pEvent);
@@ -351,7 +365,7 @@ public:
   auto&       config()       { return _config; }
 
   auto        exitFlag() const { return _exitFlag; }
-  void     setExitFlag()       { _exitFlag = true; }
+  void     setExitFlag(bool u_=true) { _exitFlag = u_; }
   auto    tickPerMilli() const { return _tickPerMilli; }
 
   auto&        context() { return _context;        }
@@ -360,14 +374,14 @@ public:
   auto&       uiEvents() { return _uiEvents;       }
   auto&  contextEvents() { return _contextEvents;  }
   auto& dropcopyEvents() { return _dropcopyEvents; }
-  auto&      netSender() { return _netSender;      }
-  auto&    netListener() { return _netListener;    }
+  auto& clientsChannel() { return _clientsChannel;  }
   auto&        monitor() { return _monitor;        }
   auto&       dropcopy() { return _dropcopy;       }
   auto&   eventFactory() { return _eventFactory;   }
-  
+  auto&        journal() { return _journal;        }
+
 private:
-  bool       _exitFlag = false;
+  bool       _exitFlag = false; 
   uint64_t   _startTick;
   uint64_t   _tickPerMilli;
   util::Tick _uiThrottle;
@@ -379,16 +393,15 @@ private:
   Dropcopy   _dropcopy;
   Monitor    _monitor;
   TEventFactory _eventFactory;
+  Journal<TAppTraits> _journal;
+  Channel _clientsChannel;
+  //Evaluation _evaluation;
 
-  util::ServerSocket _netListener;
-  util::ClientSocket _netSender; // TODO: multiple client
-  
   EventQueue _evalEvents;
   EventQueue _contextEvents;
   EventQueue _uiEvents;
   //EventQueue _dropcopyEvents; // Resolved TODO: this is not spsc
   DropcopyQueue _dropcopyEvents;
-
 
 };
 

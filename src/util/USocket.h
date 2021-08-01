@@ -10,15 +10,13 @@
 
 namespace util {
 
-using BufferSize=uint16_t;
-
 class USocket {
 public:
   enum SOCKET_RC : uint8_t {
     SUCCESS = 0,
     NO_DATA,
     DISCONNECTED,
-  };
+  }; // TODO: deco
 
 protected:
   bool _nonBlock = true;
@@ -32,7 +30,7 @@ public:
   ~ServerSocket();
   bool listen(const std::string_view host_, uint16_t port_);
   bool acceptClient();
-  SOCKET_RC receiveBuffer(char** ppBuffer, BufferSize& outSize_);
+  long recv(void* buffer_, int size_, int flag_=0);
   
 private:
   int _servSocket = -1;
@@ -44,7 +42,7 @@ class ClientSocket : public USocket {
 public:
   ~ClientSocket();
   bool connect(const std::string_view host_, uint16_t port_);
-  bool sendBuffer(void* buffer_, BufferSize size_);
+  long send(void* buffer_, int size_, int flag_=0);
 
 private:
   int _clntSocket = -1;

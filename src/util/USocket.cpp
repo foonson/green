@@ -134,6 +134,7 @@ bool ClientSocket::connect(const std::string_view host_, uint16_t port_) {
   return true;
 }
 
+/*
 USocket::SOCKET_RC ServerSocket::receiveBuffer(char** ppBuffer, BufferSize& outSize_) {
 
   BufferSize bufferSize = 0;
@@ -164,9 +165,14 @@ USocket::SOCKET_RC ServerSocket::receiveBuffer(char** ppBuffer, BufferSize& outS
   *ppBuffer = buffer;
   return SOCKET_RC::SUCCESS;
 }
+*/
 
-bool ClientSocket::sendBuffer(void* buffer_, uint16_t size_) {
-  ::send(_clntSocket, buffer_, size_, 0);
+long ServerSocket::recv(void* buffer_, int size_, int flag_) {
+  return ::recv(_clientConnection, buffer_, size_, flag_);
+}
+
+long ClientSocket::send(void* buffer_, int size_, int flag_) {
+  return ::send(_clntSocket, buffer_, size_, flag_);
   
   return true;
 }

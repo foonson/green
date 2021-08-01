@@ -9,6 +9,7 @@
 #define Config_h
 
 #include "core/includes.h"
+#include <filesystem>
 
 namespace core {
 class Config {
@@ -17,32 +18,89 @@ public:
   enum ConfigMode {
     ConfigAsReader = 0,
     ConfigAsStore,
-    ConfigAsApp
+    ConfigAsMaster,
+    ConfigAsClient
   };
   
+  virtual std::string_view appName() = 0;
+  
+  void setDefaultJorunalPath() {
+
+    namespace fs = std::filesystem;
+    fs::path journalPath = fs::path(_rootPath) / appName();
+    fs::create_directory(journalPath);
+
+    switch (_mode) {
+      case ConfigAsReader: {
+        journalPath = journalPath / "master.journal" ;
+        break ;
+      }
+      case ConfigAsStore:  {
+        journalPath = journalPath / "store.journal" ;
+        break ;
+      }
+      case ConfigAsMaster:    {
+        journalPath = journalPath / "master.journal" ;
+        break ;
+      }
+      case ConfigAsClient:    {
+        journalPath = journalPath / "client.journal" ;
+        break ;
+      }
+    }
+    _journalPathName = journalPath.string();
+  }
+  
   bool initialize(int argc_, const char * argv_[]) {
-    _mode = ConfigAsApp;
+    
+    _mode = ConfigAsMaster;
+    
     if (argc_>=2) {
       if (std::string_view("--reader")==argv_[1]) {
         _mode = ConfigAsReader;
-        if (argc_>=3) {
-          _journalPathName = argv_[2];
-        }
       }
+      
+      else if (std::string_view("--store")==argv_[1]) {
+        _mode = ConfigAsStore;
+      }
+
+      else if (std::string_view("--client")==argv_[1]) {
+        _mode = ConfigAsClient;
+      }
+    }
+
+    // Set journal pathname
+    if (argc_>=3) {
+      namespace fs = std::filesystem;
+      auto f = fs::absolute(fs::path(argv_[2]));
+      _journalPathName = f.string();
+    } else {
+      setDefaultJorunalPath();
+    }
+
+    if (asReader() && !std::filesystem::exists(journalPathName())) {
+      std::cout << journalPathName() << " not exist\n";
+      return false;
     }
     
     switch(_mode) {
       case ConfigAsReader: { std::cout << "ConfigAsReader\n"; break; }
       case ConfigAsStore:  { std::cout << "ConfigAsStore\n";  break; }
-      case ConfigAsApp:    { std::cout << "ConfigAsApp\n";    break; }
-      default:             { std::cout << "ConfigAs" << _mode << "\n"; break; }
+      case ConfigAsMaster: { std::cout << "ConfigAsMaster\n";    break; }
+      case ConfigAsClient: { std::cout << "ConfigAsClient\n";    break; }
     }
+    
+    std::cout << journalPathName() << "\n";
     return true;
   }
   
-  auto mode() { return _mode; }
-  
-  bool needDropcopy() { return mode()!=ConfigAsReader; }
+  auto mode() const { return _mode; }
+  bool asReader() const { return mode()==ConfigAsReader; }
+  bool asStore()  const { return mode()==ConfigAsStore; }
+  bool asMaster() const { return mode()==ConfigAsMaster; }
+  bool asClient() const { return mode()==ConfigAsClient; }
+
+  bool needDropcopy() const { return mode()!=ConfigAsReader; }
   
   std::string_view connectHost()     { return _connectHost; }
   std::string_view listenHost()      { return _listenHost; }
@@ -52,7 +110,8 @@ public:
 
   std::string _connectHost = "127.0.0.1";
   std::string _listenHost = "127.0.0.1";
-  std::string _journalPathName = "/Users/steve/green/tetris.master.journal";
+  std::string _rootPath = "/Users/steve/green/";
+  std::string _journalPathName;
   uint16_t    _connectPort;
   uint16_t    _listenPort;
   ConfigMode  _mode;

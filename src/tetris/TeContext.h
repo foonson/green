@@ -28,6 +28,7 @@ public:
   typedef core::Context<TeContext> Base;
 
   TePlayerContext& getPlayerContext(core::Handle hPlayer_) {
+    assert(hPlayer_< TeAppTraits::PlayerCount);
     return _player[hPlayer_];
   }
   

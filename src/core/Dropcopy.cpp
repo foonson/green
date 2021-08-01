@@ -8,25 +8,25 @@
 #include "core/includes.h"
 #include "Dropcopy.h"
 #include "util/UCPU.h"
-#include "util//USocket.h"
-#include "core/App.h"
+#include "Channel.h"
+//#include "core/App.h"
 
 namespace core {
 
 bool Dropcopy::initialize(std::string_view journalPathName_) {
   
   auto& js = journalStream();
-  js.open(journalPathName_.data(), std::ios::binary);
+  js.open(journalPathName_.data(), std::ios::binary|std::ofstream::app);
   
   return true;
 }
 
-bool Dropcopy::dropcopy(core::Event* pEvent, util::ClientSocket& client_) {
+bool Dropcopy::dropcopy(core::Event* pEvent, core::Channel& clientsChannel_) {
   
   //auto tid=std::this_thread::get_id();
   pEvent->dcSeqno(_dcSeqno++);
   if (!pEvent->isFromDropcopy()) {
-    client_.sendBuffer(pEvent, pEvent->size());
+    clientsChannel_.sendEvent(pEvent);
   }
   
   if (_dcSeqno%100==0) {

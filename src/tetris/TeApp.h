@@ -34,7 +34,7 @@ public:
     if (!Base::initialize(argc_, argv_)) {
       return false;
     }
-    if (config().isServer()) {
+    if (config().asMaster()) {
       _hPlayer = PLAYER0;
     } else {
       _hPlayer = PLAYER1;
@@ -59,7 +59,7 @@ public:
 
 private:
   mutable util::Tick _moveTick;
-  core::Handle _hPlayer = -1;
+  core::Handle _hPlayer = -1; // TODO: move to Context
   std::array<core::Handle, TeAppTraits::PlayerCount> _allPlayers = {PLAYER0, PLAYER1}; // TODO: Auto initialize with PlayerCount
   
 };

@@ -9,7 +9,10 @@
 
 int main(int argc_, const char * argv_[]) {    
   auto& app = tetris::TeApp::app();
-  app.initialize(argc_, argv_);
+  if (!app.initialize(argc_, argv_)) {
+    std::cout << "app initialize failure!";
+    return 0;
+  }
   app.run();
   app.shutdown();
   return 0;

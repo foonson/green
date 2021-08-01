@@ -33,7 +33,7 @@ void TeUI::renderFrame(SDL_Renderer* pRenderer_, core::Event* pEvent_) {
 
 std::string_view TeUI::windowTitle() {
   auto& app = tetris::TeApp::app();
-  if (app.config().isServer()) {
+  if (app.config().asMaster()) {
     return "Tetris master";
   } else {
     return "Tetris";

@@ -84,18 +84,18 @@ class TeEvalDir : public TeEvaluation {
 
   static void evaluateKey(core::EventPtr pBaseEvent_) {
     auto* pEvent = core::EventFactory::castEvent<TeKeyEvent*>(pBaseEvent_);
-    uint8_t direction = -1;
+    uint8_t direction = 0;
     
     switch (pEvent->_keyCode) {
-      case core::KEY_RIGHT: { direction = 0; break; }
-      case core::KEY_LEFT:  { direction = 1; break; }
-      case core::KEY_DOWN:  { direction = 2; break; }
-      case core::KEY_UP:    { direction = 3; break; }
+      case core::KEY_RIGHT: { direction = 1; break; }
+      case core::KEY_LEFT:  { direction = 2; break; }
+      case core::KEY_DOWN:  { direction = 3; break; }
+      case core::KEY_UP:    { direction = 4; break; }
     }
 
-    if (direction!=-1) {
+    if (direction!=0) {
       auto* pCtxEvent = eventFactory().createEvent<TeDirEvent>();
-      pCtxEvent->handle(app().hPlayer());
+      pCtxEvent->handle(pEvent->handle());
       pCtxEvent->_direction = direction;
       bool b = core::push(app().contextEvents(), pCtxEvent);
       if (!b) {
