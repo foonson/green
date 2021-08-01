@@ -43,10 +43,10 @@ public:
     auto* pDir = ctx.getDirectionPtr(hPlayer);
 
     switch (*pDir) {
-      case 0: { xyEvent->_x+=1; break;}
-      case 1: { xyEvent->_x-=1; break;}
-      case 2: { xyEvent->_y+=1; break;}
-      case 3: { xyEvent->_y-=1; break;}
+      case 1: { xyEvent->_x+=1; break;}
+      case 2: { xyEvent->_x-=1; break;}
+      case 3: { xyEvent->_y+=1; break;}
+      case 4: { xyEvent->_y-=1; break;}
     }
     
     if (xyEvent->_x>800) { xyEvent->_x = 1; }

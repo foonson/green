@@ -149,7 +149,7 @@ USocket::SOCKET_RC ServerSocket::receiveBuffer(char** ppBuffer, BufferSize& outS
   }
 
   char* buffer = new char[bufferSize];
-  //*(reinterpret_cast<uint16_t*>(buffer)) = bufferSize;
+  // *(reinterpret_cast<uint16_t*>(buffer)) = bufferSize;
   ret = ::recv(_clientConnection, buffer+offset, bufferSize-offset, 0);
 
   if (ret==0) {
