@@ -30,15 +30,16 @@ public:
     }
         
     if (asMaster()) {
-      _listenPort = 10000;
-      _connectPort = 20000;
+      _masterPort = 10000;
+      //_connectPort = 20000;
       //_journalPathName = "/Users/steve/green/tetris.master.journal";
-      std::cout << "Master listen:" << _listenPort << " connect:" << _connectPort << "\n";
+      //std::cout << "Master listen:" << _listenPort << " connect:" << _connectPort << "\n";
     } else {
-      _listenPort = 20000;
-      _connectPort = 10000;
+      _masterPort = 10000;
+      //_listenPort = 20000;
+      //_connectPort = 10000;
       //_journalPathName = "/Users/steve/green/tetris.journal";
-      std::cout << "Client listen:" << _listenPort << " connect:" << _connectPort << "\n";
+      //std::cout << "Client listen:" << _listenPort << " connect:" << _connectPort << "\n";
     }
       
     return true;

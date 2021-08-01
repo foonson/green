@@ -102,20 +102,15 @@ public:
 
   bool needDropcopy() const { return mode()!=ConfigAsReader; }
   
-  std::string_view connectHost()     { return _connectHost; }
-  std::string_view listenHost()      { return _listenHost; }
+  std::string_view masterHost()      { return _masterHost; }
   std::string_view journalPathName() { return _journalPathName; }
-  auto connectPort() { return _connectPort; }
-  auto listenPort()  { return _listenPort; }
+  auto masterPort()                  { return _masterPort; }
 
-  std::string _connectHost = "127.0.0.1";
-  std::string _listenHost = "127.0.0.1";
+  std::string _masterHost = "127.0.0.1";
   std::string _rootPath = "/Users/steve/green/";
   std::string _journalPathName;
-  uint16_t    _connectPort;
-  uint16_t    _listenPort;
+  uint16_t    _masterPort;
   ConfigMode  _mode;
-  
   
 };
 }

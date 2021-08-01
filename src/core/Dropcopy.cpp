@@ -8,7 +8,7 @@
 #include "core/includes.h"
 #include "Dropcopy.h"
 #include "util/UCPU.h"
-#include "Channel.h"
+#include "core/Channel.h"
 //#include "core/App.h"
 
 namespace core {

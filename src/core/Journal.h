@@ -40,7 +40,7 @@ public:
     
     std::ifstream js(pathName());
     do {
-      Event* pEvent = eventFactory().allocateEvent(
+      Event* pEvent = eventFactory().createEventFromStream(
         [&js](char* buffer_, EventSize size_) -> bool {
           if (!js.read(buffer_, size_)) { return false; }
           return true;
@@ -66,7 +66,7 @@ public:
     
     do {
 
-      Event* pEvent = eventFactory().allocateEvent(
+      Event* pEvent = eventFactory().createEventFromStream(
         [&js](char* buffer_, EventSize size_) -> bool {
           if (!js.read(buffer_, size_)) { return false; }
           return true;

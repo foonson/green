@@ -66,11 +66,11 @@ public:
       config().journalPathName(),
       eventFactory())
     ) {
-      std::cerr << "reader initialize failure!\n";
+      std::cerr << "Journal initialize failure!\n";
       return false;
     }
     
-    if (config().mode()==TConfig::ConfigAsReader) {
+    if (config().asReader()) {
       return true;
     }
     
@@ -102,7 +102,18 @@ public:
       return false;
     }
 
-    clientsChannel().initializeAsListener(config().listenHost(), config().listenPort());
+    auto& c = config();
+    if (c.asMaster()) {
+      if (!clientsChannel().initializeAsListener(c.masterHost(), c.masterPort())) {
+        std::cerr << "initializeAsListener failure!\n";
+        return false;
+      }
+    } else if (c.asClient()) {
+      if(!clientsChannel().connect(config().masterHost(), config().masterPort())) {
+        std::cerr << "connect failure!\n";
+        return false;
+      }
+    }
 
     return true;
   }
@@ -234,12 +245,13 @@ public:
       app().pollInput();
       
     // IO
-      clientsChannel().acceptClient();
+      if (config().asMaster()) {
+        clientsChannel().acceptClient();
+      }
 
-      core::Event* pEvent = eventFactory().allocateEvent(
+      core::Event* pEvent = eventFactory().createEventFromStream(
         [this](char* buffer_, EventSize size_) -> bool { return clientsChannel().recv(buffer_, size_); }
       );
-      
         
       if (pEvent!=nullptr) {
         pEvent->isFromDropcopy(true);
@@ -296,7 +308,8 @@ public:
   void dropcopyLoop() {
     
     // Server connection
-    int i=0;
+    //int i=0;
+    /*
     while (!exitFlag()) {
       if (clientsChannel().connect(config().connectHost(), config().connectPort()))
       {
@@ -306,6 +319,7 @@ public:
       util::sleep(1000);
       i++;
     }
+     */
     
     // dropcopy Loop
     while (!_exitFlag) {

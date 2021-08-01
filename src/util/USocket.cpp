@@ -48,8 +48,8 @@ bool ServerSocket::listen(const std::string_view host_, uint16_t port_) {
   
   if (_nonBlock) {
     std::cout << "nonblock socket\n";
-    int ret = fcntl(_servSocket, F_SETFL, O_NONBLOCK);
-    if (ret<0) {
+    int res = fcntl(_servSocket, F_SETFL, O_NONBLOCK);
+    if (res<0) {
       std::cerr << "Server fcntl O_NONBLOCK failure. " << strerror(errno) << "\n" ;
       return false;
     }
@@ -171,10 +171,16 @@ long ServerSocket::recv(void* buffer_, int size_, int flag_) {
   return ::recv(_clientConnection, buffer_, size_, flag_);
 }
 
+long ServerSocket::send(void* buffer_, int size_, int flag_) {
+  return ::send(_clientConnection, buffer_, size_, flag_);
+}
+
+long ClientSocket::recv(void* buffer_, int size_, int flag_) {
+  return ::recv(_clntSocket, buffer_, size_, flag_);
+}
+
 long ClientSocket::send(void* buffer_, int size_, int flag_) {
   return ::send(_clntSocket, buffer_, size_, flag_);
-  
-  return true;
 }
 
 

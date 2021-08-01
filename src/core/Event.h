@@ -157,7 +157,7 @@ class EventFactory {
 public:
   friend class Event;
 
-  EventPtr allocateEvent(
+  EventPtr createEventFromStream(
     std::function<bool(char*,EventSize)> fnRead)
   {
     EventSize eventSize = 0;
@@ -167,12 +167,12 @@ public:
 
     // invalid buffer size
     if (eventSize <= sizeof(EventSize)) {
-      assert(false && "invalid event 1. allocateEvent");
+      assert(false && "invalid event 1. createEventFromStream");
     }
     
     char* buffer = new char[eventSize];
     if (!fnRead(buffer+sizeof(EventSize), eventSize-sizeof(EventSize))) {
-      assert(false && "invalid event 2. allocateEvent");
+      assert(false && "invalid event 2. createEventFromStream");
     }
     
     auto* pEvent = castEvent(buffer, eventSize);
