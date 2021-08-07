@@ -7,7 +7,7 @@
 
 #ifndef TeEvalMove_h
 #define TeEvalMove_h
-#include "TeApp.h"
+#include "TeBusCenter.h"
 #include "TeEvaluation.h"
 
 namespace tetris {
@@ -18,10 +18,10 @@ public:
   static void pollTimer() {
     //if (!config().isServer()) { return ; }
 
-    if (app().moveTick().pass()) {
+    if (busCenter().moveTick().pass()) {
       auto* pEvent = eventFactory().createEvent<TeTickMoveEvent>();
-      pEvent->handle(app().hPlayer());
-      bool b = core::push(app().evalEvents(), pEvent);
+      pEvent->handle(busCenter().hPlayer());
+      bool b = core::push(busCenter().evalEvents(), pEvent);
       if (!b) {
         std::cout << "evalEvents().push TeTickMoveEvent failure\n";
         core::EventFactory::releaseEvent(pEvent);
@@ -97,7 +97,7 @@ class TeEvalDir : public TeEvaluation {
       auto* pCtxEvent = eventFactory().createEvent<TeDirEvent>();
       pCtxEvent->handle(pEvent->handle());
       pCtxEvent->_direction = direction;
-      bool b = core::push(app().contextEvents(), pCtxEvent);
+      bool b = core::push(busCenter().contextEvents(), pCtxEvent);
       if (!b) {
         std::cout << "contextEvents().push TeDirEvent failure\n";
         core::EventFactory::releaseEvent(pEvent);

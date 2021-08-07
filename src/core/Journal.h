@@ -10,7 +10,8 @@
 
 #include "core/includes.h"
 #include "core/Event.h"
-#include "core/Evaluation.h"
+#include "core/Queue.h"
+
 
 namespace core {
 
@@ -111,14 +112,13 @@ public:
   }
   
   auto  pathName()     { return _journalPathName; }
-  auto& eventFactory() { return *_pEventFactory; }
-  
+  auto&       eventFactory()       { return *_pEventFactory; }
+  const auto& eventFactory() const { return *_pEventFactory; }
+
 private:
   std::string_view _journalPathName;
-  TEventFactory* _pEventFactory;
+  TEventFactory* _pEventFactory;  // non-own pointer
   
-  
-    
 };
 
 }

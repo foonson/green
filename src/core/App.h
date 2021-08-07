@@ -21,7 +21,7 @@
 #include "core/Monitor.h"
 #include "core/Dropcopy.h"
 #include "core/Journal.h"
-#include "core/Evaluation.h"
+#include "core/BusCenter.h"
 #include "core/Channel.h"
 
 namespace core {
@@ -35,6 +35,7 @@ public:
   using        TConfig=typename TAppTraits::TConfig;
   using            TUI=typename TAppTraits::TUI;
   using  TEventFactory=typename TAppTraits::TEventFactory;
+  using     TBusCenter=typename TAppTraits::TBusCenter;
 
   static TApp& app() {
     static TApp _gapp;
@@ -42,9 +43,9 @@ public:
   }
   
   bool recover() {
-    journal().recoverFromJournal(evalEvents(),
+    journal().recoverFromJournal(busCenter().evalEvents(),
       [this](){
-        evalOnce();
+        busCenter().evalOnce();
       }
     );
     return true;
@@ -87,10 +88,14 @@ public:
     _tickPerMilli = util::UCPU::calcTickPerMilli();
     _uiThrottle.intervalMicro(100);
     _uiThrottle.tickPerMilli(_tickPerMilli);
-    _evalThrottle.intervalMicro(100);
-    _evalThrottle.tickPerMilli(_tickPerMilli);
+    
+    util::Tick evalThrottle;
+    evalThrottle.intervalMicro(100);
+    evalThrottle.tickPerMilli(_tickPerMilli);
     std::cout << "TickPerMilli _uiTick:"   << _uiThrottle.tickPerMilli() << "\n";
-    std::cout << "TickPerMilli _evalTick:" << _evalThrottle.tickPerMilli() << "\n";
+    std::cout << "TickPerMilli evalTick:" << evalThrottle.tickPerMilli() << "\n";
+    
+    busCenter().initialize(evalThrottle, eventFactory(), config(), clientsChannel(), ui());
     
     if (!context().initialize()) {
       std::cerr << "context initialize failure!\n";
@@ -133,7 +138,7 @@ public:
       std::cerr << "recover failure!\n";
       return;
     }
-    setExitFlag(false);
+    busCenter().setExitFlag(false);
     
     std::thread uiThread;
     std::thread dropcopyThread;
@@ -148,7 +153,7 @@ public:
       }
     }
 
-    evalLoop();
+    busCenter().evalLoop();
 
     std::cout << "Wait UI thread finish\n";
     healthCheck(true);
@@ -166,135 +171,26 @@ public:
   
   void healthCheck(bool printSnapShot_) {
     monitor().monitorQueueLength( printSnapShot_,
-                                 evalEvents().read_available(),
-                                   uiEvents().read_available(),
+                                 busCenter().evalEvents().read_available(),
+                                 busCenter().uiEvents().read_available(),
                              /*dropcopyEvents().read_available()*/ -1,
-                              contextEvents().read_available());
-  }
-  
-  void pollTimer() {
-    app().pollTimer();
-  }
-  
-  bool forwardEvent(core::EventPtr pEvent) {
-    // Forward the context/UI event from dropcopy to queue
-    if (!pEvent->isFromDropcopy()) { return false ;}
-    
-    if (pEvent->isContextEvent()) {
-      auto rc = core::push(contextEvents(), pEvent);
-      if (!rc) {
-        std::cerr << "Drop event - contextEvents";
-        core::EventFactory::releaseEvent(pEvent);
-      }
-      return true;
-    }
-
-    if (pEvent->isUIEvent()) {
-      auto rc = core::push(uiEvents(), pEvent);
-      if (!rc) {
-        std::cerr << "Drop event - uiEvent";
-        core::EventFactory::releaseEvent(pEvent);
-      }
-      return true;
-    }
-    
-    return false;
-  }
-  
-  void evalOnce() {
-    // Evaluate
-    while(true) {
-      EventPtr pEvent;
-      if(!evalEvents().pop(pEvent)) { break; }
-
-      // forward event
-      if (forwardEvent(pEvent)) {
-        continue;
-      }
-
-      // application specific evaluation
-      app().evaluate(pEvent);
-
-      auto rc = core::push(dropcopyEvents(), pEvent);
-      if (!rc) {
-        std::cerr << "Drop event - dropcopyEvents 1\n";
-        core::EventFactory::releaseEvent(pEvent);
-      }
-    }
-    
-    // Update context
-    while (true) {
-      EventPtr pEvent;
-      if(!contextEvents().pop(pEvent)) { break; }
-      app().updateContext(pEvent); //TODO
-      
-      auto rc = core::push(dropcopyEvents(), pEvent);
-      if (!rc) {
-        std::cerr << "Drop event - dropcopyEvents 2\n";
-        core::EventFactory::releaseEvent(pEvent);
-      }
-    }
-  }
-  
-  void evalLoop() {
-    while (!exitFlag()) {
-
-      if (!_evalThrottle.pass()) { continue; }
-
-    // ui input
-      app().pollInput();
-      
-    // IO
-      if (config().asMaster()) {
-        clientsChannel().acceptClient();
-      }
-
-      core::Event* pEvent = eventFactory().createEventFromStream(
-        [this](char* buffer_, EventSize size_) -> bool { return clientsChannel().recv(buffer_, size_); }
-      );
-        
-      if (pEvent!=nullptr) {
-        pEvent->isFromDropcopy(true);
-        
-        if (pEvent->isContextEvent() ||
-            pEvent->isUIEvent())
-        {
-          auto rc = core::push(evalEvents(), pEvent);
-          if (!rc) {
-            std::cerr << "Drop event - evalEvents\n";
-            core::EventFactory::releaseEvent(pEvent);
-          }
-
-        } else {
-          std::cout << "Discard " << pEvent->eventName() << "\n";
-          core::EventFactory::releaseEvent(pEvent);
-        }
-      }
-
-      // Timer
-      pollTimer();
-
-      evalOnce();
-
-      healthCheck(false);
-
-    }
+                                 busCenter().contextEvents().read_available());
   }
   
   void uiLoop() {
-    while (!exitFlag()) {
+    while (!busCenter().exitFlag()) {
       if (!_uiThrottle.pass()) { continue; }
       
       do {
         EventPtr pEvent;
-        if (!uiEvents().pop(pEvent)) { break; }
+        if (!busCenter().uiEvents().pop(pEvent)) { break; }
         
-        if (!exitFlag()) {
+        if (!busCenter().exitFlag()) {
           ui().render(pEvent); // TODO
         }
 
         // Resolved TODO: break SPSC
-        auto rc = core::push(dropcopyEvents(), pEvent);
+        auto rc = core::push(busCenter().dropcopyEvents(), pEvent);
         if (!rc) {
           std::cerr << "Drop event - dropcopyEvents 3\n";
           core::EventFactory::releaseEvent(pEvent);
@@ -322,10 +218,10 @@ public:
      */
     
     // dropcopy Loop
-    while (!_exitFlag) {
+    while (!busCenter().exitFlag()) {
       do {
         EventPtr pEvent;
-        if (!dropcopyEvents().pop(pEvent)) { break; }
+        if (!busCenter().dropcopyEvents().pop(pEvent)) { break; }
         
         dropcopy().dropcopy(pEvent, clientsChannel());
         
@@ -362,7 +258,7 @@ public:
     }
     
     app().healthCheck(true);
-    app()._exitFlag = true;
+    app().busCenter().setExitFlag(true);
   }
 
   void registerSignalHandler() {
@@ -372,22 +268,18 @@ public:
     std::signal(SIGILL,  &App::signalHandler);
     std::signal(SIGABRT, &App::signalHandler);
     std::signal(SIGFPE,  &App::signalHandler);
-    std::signal(SIGPIPE,  &App::signalHandler); // TODO
+    std::signal(SIGPIPE, &App::signalHandler); // TODO
   }
 
-  const auto& config() const { return _config; }
   auto&       config()       { return _config; }
+  const auto& config() const { return _config; }
 
-  auto        exitFlag() const { return _exitFlag; }
-  void     setExitFlag(bool u_=true) { _exitFlag = u_; }
   auto    tickPerMilli() const { return _tickPerMilli; }
 
   auto&        context() { return _context;        }
   auto&             ui() { return _ui;             }
-  auto&     evalEvents() { return _evalEvents;     }
-  auto&       uiEvents() { return _uiEvents;       }
-  auto&  contextEvents() { return _contextEvents;  }
-  auto& dropcopyEvents() { return _dropcopyEvents; }
+  auto&           busCenter()       { return _busCenter;      }
+  const auto&     busCenter() const { return _busCenter;      }
   auto& clientsChannel() { return _clientsChannel;  }
   auto&        monitor() { return _monitor;        }
   auto&       dropcopy() { return _dropcopy;       }
@@ -395,27 +287,19 @@ public:
   auto&        journal() { return _journal;        }
 
 private:
-  bool       _exitFlag = false; 
   uint64_t   _startTick;
   uint64_t   _tickPerMilli;
   util::Tick _uiThrottle;
-  util::Tick _evalThrottle;
 
-  TContext   _context;
-  TUI        _ui;
-  TConfig    _config;
-  Dropcopy   _dropcopy;
-  Monitor    _monitor;
+  TContext      _context;
+  TUI           _ui;
+  TConfig       _config;
+  Dropcopy      _dropcopy;
+  Monitor       _monitor;
+  Channel       _clientsChannel;
+  TBusCenter   _busCenter;
   TEventFactory _eventFactory;
   Journal<TAppTraits> _journal;
-  Channel _clientsChannel;
-  //Evaluation _evaluation;
-
-  EventQueue _evalEvents;
-  EventQueue _contextEvents;
-  EventQueue _uiEvents;
-  //EventQueue _dropcopyEvents; // Resolved TODO: this is not spsc
-  DropcopyQueue _dropcopyEvents;
 
 };
 

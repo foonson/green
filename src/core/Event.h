@@ -223,8 +223,6 @@ protected:
   std::unordered_map<core::EventType, core::EventFunctor> _functors;
 };
 
-
-
 }
 
 #endif /* Event_h */

@@ -36,10 +36,8 @@ public:
   
   bool sendEvent(core::Event* pEvent_) {
     if (_isClient) {
-      std::cout << "1\n";
       return _netClient.send(pEvent_, pEvent_->size());
     } else {
-      std::cout << "2\n";
       return _netListener.send(pEvent_, pEvent_->size());
     }
   }
@@ -47,10 +45,8 @@ public:
   bool recv(char* buffer_, EventSize size_) {
     long ret = 0;
     if (_isClient) {
-      std::cout << "3\n";
       ret = _netClient.recv(buffer_, size_);
     } else {
-      std::cout << "4\n";
       ret = _netListener.recv(buffer_, size_);
     }
     if (ret==0)  { return false; } //util::USocket::SOCKET_RC::DISCONNECTED;

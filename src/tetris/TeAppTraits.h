@@ -12,15 +12,15 @@ namespace tetris {
 
 class TeConfig;
 class TeContext;
+class TeBusCenter;
 
 struct TeAppTraits {
   using        TConfig=tetris::TeConfig;
   using       TContext=tetris::TeContext;
   using            TUI=tetris::TeUI;
   using  TEventFactory=tetris::TeEventFactory;
-  
-// Const
-  static const uint8_t PlayerCount = 2;
+  using     TBusCenter=tetris::TeBusCenter;
+
 
 };
 

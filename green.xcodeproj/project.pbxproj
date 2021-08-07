@@ -13,7 +13,11 @@
 		AA10A81D2684D580007CDBA3 /* UTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA10A81B2684CE7A007CDBA3 /* UTime.cpp */; };
 		AA10A81E2684D581007CDBA3 /* UTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA10A81B2684CE7A007CDBA3 /* UTime.cpp */; };
 		AA10A81F2684D581007CDBA3 /* UTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA10A81B2684CE7A007CDBA3 /* UTime.cpp */; };
+		AA692C2126BED78600B07E53 /* Tick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA692C2026BED78600B07E53 /* Tick.cpp */; };
+		AA692C2226BED78600B07E53 /* Tick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA692C2026BED78600B07E53 /* Tick.cpp */; };
+		AA692C2326BED78600B07E53 /* Tick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA692C2026BED78600B07E53 /* Tick.cpp */; };
 		AA6C6CF6267718A5004399DB /* tetris.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA6C6CF5267718A5004399DB /* tetris.cpp */; };
+		AA80472826BEB50A002C42DD /* TeBusCenter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA80472726BEB50A002C42DD /* TeBusCenter.cpp */; };
 		AA80AC0C26A712F0006CFA5E /* Reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA80AC0B26A712F0006CFA5E /* Reader.cpp */; };
 		AA80AC0D26A712F0006CFA5E /* Reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA80AC0B26A712F0006CFA5E /* Reader.cpp */; };
 		AA80AC0E26A712F0006CFA5E /* Reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA80AC0B26A712F0006CFA5E /* Reader.cpp */; };
@@ -70,8 +74,11 @@
 		AA18D6412695533E00BC8187 /* Monitor.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Monitor.h; sourceTree = "<group>"; tabWidth = 2; };
 		AA25ABD9269AEA660040728F /* Journal.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Journal.h; sourceTree = "<group>"; tabWidth = 2; };
 		AA2E943626B421C600D0232A /* Channel.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Channel.h; sourceTree = "<group>"; tabWidth = 2; };
+		AA692C2026BED78600B07E53 /* Tick.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Tick.cpp; sourceTree = "<group>"; };
 		AA6C6CF3267718A5004399DB /* tetris */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tetris; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA6C6CF5267718A5004399DB /* tetris.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = tetris.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		AA80472626BE59D5002C42DD /* Queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Queue.h; sourceTree = "<group>"; };
+		AA80472726BEB50A002C42DD /* TeBusCenter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TeBusCenter.cpp; sourceTree = "<group>"; };
 		AA80AC0B26A712F0006CFA5E /* Reader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Reader.cpp; sourceTree = "<group>"; };
 		AA84810026A1F9D700A6CFF3 /* TeEvalMove.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeEvalMove.h; sourceTree = "<group>"; tabWidth = 2; };
 		AA84810126A2017800A6CFF3 /* TeEvaluation.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeEvaluation.h; sourceTree = "<group>"; tabWidth = 2; };
@@ -81,8 +88,8 @@
 		AAA1607E26772FB80027943C /* TeApp.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = TeApp.cpp; sourceTree = "<group>"; tabWidth = 2; };
 		AAA1607F26772FB80027943C /* TeApp.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeApp.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAA4A79B269DF1DA007B5738 /* Event.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cpp; sourceTree = "<group>"; };
-		AAA887F02679972600121116 /* Evaluation.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Evaluation.h; sourceTree = "<group>"; tabWidth = 2; };
-		AAA887F12679972600121116 /* Evaluation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Evaluation.cpp; sourceTree = "<group>"; };
+		AAA887F02679972600121116 /* BusCenter.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = BusCenter.h; sourceTree = "<group>"; tabWidth = 2; };
+		AAA887F12679972600121116 /* BusCenter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BusCenter.cpp; sourceTree = "<group>"; };
 		AAAF880E2678CD8500358F0B /* Context.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = Context.cpp; sourceTree = "<group>"; tabWidth = 2; };
 		AAAF880F2678CD8500358F0B /* Context.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAAF88102678CDF300358F0B /* TeContext.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TeContext.cpp; sourceTree = "<group>"; };
@@ -94,6 +101,7 @@
 		AAB631132675016500674E83 /* busstop.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = busstop.cpp; sourceTree = "<group>"; tabWidth = 2; };
 		AAB6311B267501F200674E83 /* includes.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = includes.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAB6311C2675027400674E83 /* notes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
+		AABE2FA026BD925300F468B1 /* TeBusCenter.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeBusCenter.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAC4C2452684C3580026DD88 /* TeEvent.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = TeEvent.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAC4C2462684C3840026DD88 /* Event.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; tabWidth = 2; };
 		AAC4C2482684C8960026DD88 /* UCPU.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = UCPU.h; sourceTree = "<group>"; tabWidth = 2; };
@@ -141,6 +149,7 @@
 				AA6C6CF5267718A5004399DB /* tetris.cpp */,
 				AAA1607E26772FB80027943C /* TeApp.cpp */,
 				AAA1607F26772FB80027943C /* TeApp.h */,
+				AAC5665C26A26D8600B25EB0 /* TeAppTraits.h */,
 				AAAF88102678CDF300358F0B /* TeContext.cpp */,
 				AAAF88112678CDF300358F0B /* TeContext.h */,
 				AAAF88122678D0F300358F0B /* TeIncludes.h */,
@@ -149,9 +158,10 @@
 				AAA088F726838F8200CD05C1 /* TeReadme.txt */,
 				AAC4C2452684C3580026DD88 /* TeEvent.h */,
 				AAED4390269027210025246B /* TeConfig.h */,
+				AABE2FA026BD925300F468B1 /* TeBusCenter.h */,
+				AA80472726BEB50A002C42DD /* TeBusCenter.cpp */,
 				AA84810026A1F9D700A6CFF3 /* TeEvalMove.h */,
 				AA84810126A2017800A6CFF3 /* TeEvaluation.h */,
-				AAC5665C26A26D8600B25EB0 /* TeAppTraits.h */,
 			);
 			path = tetris;
 			sourceTree = "<group>";
@@ -220,18 +230,19 @@
 				AAA1607D26772E800027943C /* SDLUI.h */,
 				AAAF880E2678CD8500358F0B /* Context.cpp */,
 				AAAF880F2678CD8500358F0B /* Context.h */,
-				AAA887F02679972600121116 /* Evaluation.h */,
-				AAA887F12679972600121116 /* Evaluation.cpp */,
+				AAA887F02679972600121116 /* BusCenter.h */,
+				AAA887F12679972600121116 /* BusCenter.cpp */,
 				AAD10AFD267BABAF006161CC /* UI.h */,
 				AAC4C2462684C3840026DD88 /* Event.h */,
+				AAA4A79B269DF1DA007B5738 /* Event.cpp */,
 				AAD458D2269089BC003DB668 /* Config.h */,
 				AA18D6412695533E00BC8187 /* Monitor.h */,
 				AADD49132699C9C70073C271 /* Dropcopy.cpp */,
 				AADD49142699C9C70073C271 /* Dropcopy.h */,
 				AA25ABD9269AEA660040728F /* Journal.h */,
 				AA80AC0B26A712F0006CFA5E /* Reader.cpp */,
-				AAA4A79B269DF1DA007B5738 /* Event.cpp */,
 				AA2E943626B421C600D0232A /* Channel.h */,
+				AA80472626BE59D5002C42DD /* Queue.h */,
 			);
 			path = core;
 			sourceTree = "<group>";
@@ -250,6 +261,7 @@
 				AAC4C2482684C8960026DD88 /* UCPU.h */,
 				AA10A8142684CA7A007CDBA3 /* UCPU.cpp */,
 				AA10A81A2684CCB3007CDBA3 /* Tick.h */,
+				AA692C2026BED78600B07E53 /* Tick.cpp */,
 				AA10A81B2684CE7A007CDBA3 /* UTime.cpp */,
 				AA10A81C2684CE7A007CDBA3 /* UTime.h */,
 				AAF41B8E268B79E300CF8099 /* USocket.cpp */,
@@ -373,6 +385,8 @@
 				AA10A8152684CA82007CDBA3 /* UCPU.cpp in Sources */,
 				AA80AC0E26A712F0006CFA5E /* Reader.cpp in Sources */,
 				AA6C6CF6267718A5004399DB /* tetris.cpp in Sources */,
+				AA80472826BEB50A002C42DD /* TeBusCenter.cpp in Sources */,
+				AA692C2326BED78600B07E53 /* Tick.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +398,7 @@
 				AA10A8192684CBF4007CDBA3 /* UCPU.cpp in Sources */,
 				AAB631072675012C00674E83 /* main.cpp in Sources */,
 				AADD49152699C9C70073C271 /* Dropcopy.cpp in Sources */,
+				AA692C2126BED78600B07E53 /* Tick.cpp in Sources */,
 				AAF41B90268B79E300CF8099 /* USocket.cpp in Sources */,
 				AA80AC0C26A712F0006CFA5E /* Reader.cpp in Sources */,
 				AA10A81F2684D581007CDBA3 /* UTime.cpp in Sources */,
@@ -398,6 +413,7 @@
 				AA10A8182684CBF3007CDBA3 /* UCPU.cpp in Sources */,
 				AAB631142675016500674E83 /* busstop.cpp in Sources */,
 				AADD49162699C9C70073C271 /* Dropcopy.cpp in Sources */,
+				AA692C2226BED78600B07E53 /* Tick.cpp in Sources */,
 				AAF41B91268B79E300CF8099 /* USocket.cpp in Sources */,
 				AA80AC0D26A712F0006CFA5E /* Reader.cpp in Sources */,
 				AA10A81E2684D581007CDBA3 /* UTime.cpp in Sources */,

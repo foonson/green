@@ -9,6 +9,7 @@
 #define TeEvent_h
 
 #include "core/Event.h"
+#include "core/SDLUI.h"
 #include <boost/preprocessor.hpp>
 //#include <cassert>
 

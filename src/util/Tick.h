@@ -12,32 +12,43 @@
 
 namespace util {
 
+using TickInterval=uint64_t;
+
 class Tick {
   
 public:
-  Tick() {} ;
-  auto tickPerMilli()             { return _tickPerMilli; }
-  void tickPerMilli(uint64_t u_ ) { _tickPerMilli = u_; }
-  auto intervalMilli()            { return _intervalMicro/1000; }
-  void intervalMilli(uint64_t u_) { _intervalMicro = u_*1000; }
-  auto intervalMicro()            { return _intervalMicro; }
-  void intervalMicro(uint64_t u_) { _intervalMicro = u_; }
-
+  Tick() {
+    _next = 0;
+  } ;
   
-  bool pass() {
-    auto now = util::UCPU::cpuTick();
-    if (now < _next) { return false; }
-    
-    //_last = now;
-    _next = now + _intervalMicro * _tickPerMilli / 1000;
-    return true;
+  // copy constructor
+  Tick(const Tick& tick_) {
+    _intervalMicro = tick_._intervalMicro;
+    _tickPerMilli = tick_._tickPerMilli;
+    _next = 0;
   }
   
+  Tick operator=(const Tick& tick_) {
+    _intervalMicro = tick_._intervalMicro;
+    _tickPerMilli = tick_._tickPerMilli;
+    _next = 0;
+    return (*this);
+  }
+  
+  auto tickPerMilli()                 { return _tickPerMilli; }
+  void tickPerMilli(TickInterval u_ ) { _tickPerMilli = u_; }
+  auto intervalMilli()                { return _intervalMicro/1000; }
+  void intervalMilli(TickInterval u_) { _intervalMicro = u_*1000; }
+  auto intervalMicro()                { return _intervalMicro; }
+  void intervalMicro(TickInterval u_) { _intervalMicro = u_; }
+  
+  bool pass();
+  
 private:
-  uint64_t _intervalMicro;
+  TickInterval _intervalMicro;
   //uint64_t _last;
-  uint64_t _next;
-  uint64_t _tickPerMilli;
+  TickInterval _next;
+  TickInterval _tickPerMilli;
 
 };
 

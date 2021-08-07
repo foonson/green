@@ -10,7 +10,8 @@
 
 #include "core/Context.h"
 #include "TeEvent.h"
-#include "TeAppTraits.h"
+#include "TeBusCenter.h"
+//#include "TeAppTraits.h"
 
 namespace tetris {
 
@@ -28,7 +29,7 @@ public:
   typedef core::Context<TeContext> Base;
 
   TePlayerContext& getPlayerContext(core::Handle hPlayer_) {
-    assert(hPlayer_< TeAppTraits::PlayerCount);
+    assert(hPlayer_< TeBusCenter::PlayerCount);
     return _player[hPlayer_];
   }
   
@@ -52,7 +53,7 @@ public:
   }
   
 private:
-  TePlayerContext _player[TeAppTraits::PlayerCount];
+  TePlayerContext _player[TeBusCenter::PlayerCount];
 };
 
 }
