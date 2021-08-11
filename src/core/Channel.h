@@ -26,20 +26,27 @@ public:
   
   bool connect(std::string_view remoteHost_, uint16_t remotePort_) {
     _isClient = true;
-    return _netClient.connect(remoteHost_, remotePort_);
+    bool res = _netClient.connect(remoteHost_, remotePort_);
+    _isReady = res;
+    return res;
   }
 
   bool acceptClient() {
     assert(!_isClient && "client cannot acceptClient");
-    return _netListener.acceptClient();
+    bool res = _netListener.acceptClient();
+    if (res) { _isReady = true; }
+    return res;
   }
   
   bool sendEvent(core::Event* pEvent_) {
+    long ret = 0;
     if (_isClient) {
-      return _netClient.send(pEvent_, pEvent_->size());
+      ret = _netClient.send(pEvent_, pEvent_->size());
     } else {
-      return _netListener.send(pEvent_, pEvent_->size());
+      ret = _netListener.send(pEvent_, pEvent_->size());
     }
+    if (ret==-1) { return false; } //util::USocket::SOCKET_RC::NO_DATA;
+    return true;
   }
   
   bool recv(char* buffer_, EventSize size_) {
@@ -54,12 +61,15 @@ public:
     return true;
   }
   
+  auto isReady() const { return _isReady; } // TODO: multithread
+  
 private:
   util::ServerSocket _netListener;
   util::ClientSocket _netClient; // TODO: multiple client
   //uint16_t _randomlistenPort = 0;
   
   bool _isClient = false;
+  bool _isReady = false;
 };
 
 }

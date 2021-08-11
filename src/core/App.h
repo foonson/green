@@ -92,11 +92,9 @@ public:
     util::Tick evalThrottle;
     evalThrottle.intervalMicro(100);
     evalThrottle.tickPerMilli(_tickPerMilli);
-    std::cout << "TickPerMilli _uiTick:"   << _uiThrottle.tickPerMilli() << "\n";
+    std::cout << "TickPerMilli _uiTick:"  << _uiThrottle.tickPerMilli() << "\n";
     std::cout << "TickPerMilli evalTick:" << evalThrottle.tickPerMilli() << "\n";
-    
-    busCenter().initialize(evalThrottle, eventFactory(), config(), clientsChannel(), ui());
-    
+        
     if (!context().initialize()) {
       std::cerr << "context initialize failure!\n";
       return false;
@@ -106,6 +104,8 @@ public:
       std::cerr << "ui initialize failure!\n";
       return false;
     }
+
+    busCenter().initialize(evalThrottle, eventFactory(), config(), clientsChannel(), ui());
 
     auto& c = config();
     if (c.asMaster()) {
@@ -219,20 +219,32 @@ public:
     
     // dropcopy Loop
     while (!busCenter().exitFlag()) {
+      if (!clientsChannel().isReady()) {
+        std::cerr << "Dropcopy retry after 1sec\n";
+        util::sleep(1000);
+        continue;
+      }
       do {
         EventPtr pEvent;
         if (!busCenter().dropcopyEvents().pop(pEvent)) { break; }
         
-        dropcopy().dropcopy(pEvent, clientsChannel());
+        bool bDropcopy = dropcopy().dropcopy(pEvent, clientsChannel());
         
         // release event
         core::EventFactory::releaseEvent(pEvent);
+        
+        if (!bDropcopy) {
+          std::cerr << "dropcopy failure\n";
+          busCenter().setExitFlag(true);
+          break;
+        }
       } while(true);
     }
   }
   
   bool shutdown() {
     std::cout << "App::shutdown\n";
+    busCenter().shutdown();
     monitor().printSummary();
     ui().shutdown();
     context().shutdown();
@@ -268,7 +280,8 @@ public:
     std::signal(SIGILL,  &App::signalHandler);
     std::signal(SIGABRT, &App::signalHandler);
     std::signal(SIGFPE,  &App::signalHandler);
-    std::signal(SIGPIPE, &App::signalHandler); // TODO
+    
+    std::signal(SIGPIPE, SIG_IGN); // TODO
   }
 
   auto&       config()       { return _config; }
@@ -297,7 +310,7 @@ private:
   Dropcopy      _dropcopy;
   Monitor       _monitor;
   Channel       _clientsChannel;
-  TBusCenter   _busCenter;
+  TBusCenter    _busCenter;
   TEventFactory _eventFactory;
   Journal<TAppTraits> _journal;
 

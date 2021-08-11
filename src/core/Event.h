@@ -68,14 +68,14 @@ class Event {
 
 private:
   using Flag=uint32_t;
-  const static Flag Flag_isFromDropcopy     = 1;
+  const static Flag Flag_isFromPartner      = 1;
   const static Flag Flag_createdFromBuffer  = 1 << 1;
 
 public:
   Event();
 
   FLAG_ACCESSER(createdFromBuffer)
-  FLAG_ACCESSER(isFromDropcopy)
+  FLAG_ACCESSER(isFromPartner)
 
   void size(uint16_t u_)        { _size = u_; }
   void eventType(EventType u_)  { _eventType = u_; }
@@ -176,6 +176,7 @@ public:
     }
     
     auto* pEvent = castEvent(buffer, eventSize);
+    pEvent->createdFromBuffer(true);
     return pEvent;
   }
 

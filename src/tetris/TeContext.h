@@ -18,7 +18,7 @@ namespace tetris {
 // TODO: main thread / ui thread synchronization
 
 struct TePlayerContext {
-  uint8_t  direction = 0;
+  uint8_t  direction = 1;
   uint16_t x = 1;
   uint16_t y = 1;
 };

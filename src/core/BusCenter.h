@@ -36,11 +36,15 @@ public:
     return true;
   }
   
+  bool shutdown() {
+    return true;
+  }
+  
   TBusCenter& appBusCenter() { return *(static_cast<TBusCenter*>(this)); }
   
   bool forwardEvent(core::EventPtr pEvent) {
     // Forward the context/UI event from dropcopy to queue
-    if (!pEvent->isFromDropcopy()) { return false ;}
+    if (!pEvent->isFromPartner()) { return false ;}
     
     if (pEvent->isContextEvent()) {
       auto rc = core::push(contextEvents(), pEvent);
@@ -70,7 +74,7 @@ public:
       if(!evalEvents().pop(pEvent)) { break; }
 
       // forward event if event is from dropcopy
-      if (pEvent->isFromDropcopy()) {
+      if (pEvent->isFromPartner()) {
         if (forwardEvent(pEvent)) {
           continue;
         }
@@ -119,7 +123,7 @@ public:
       );
         
       if (pEvent!=nullptr) {
-        pEvent->isFromDropcopy(true);
+        pEvent->isFromPartner(true);
         
         if (pEvent->isContextEvent() ||
             pEvent->isUIEvent())

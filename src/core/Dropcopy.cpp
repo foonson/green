@@ -25,8 +25,12 @@ bool Dropcopy::dropcopy(core::Event* pEvent, core::Channel& clientsChannel_) {
   
   //auto tid=std::this_thread::get_id();
   pEvent->dcSeqno(_dcSeqno++);
-  if (!pEvent->isFromDropcopy()) {
-    clientsChannel_.sendEvent(pEvent);
+  bool bSuccess = true;
+  if (!pEvent->isFromPartner()) {
+    bSuccess = clientsChannel_.sendEvent(pEvent);
+    if (!bSuccess) {
+      std::cerr << "sendEvent to partner failed\n";
+    }
   }
   
   if (_dcSeqno%100==0) {
@@ -41,7 +45,7 @@ bool Dropcopy::dropcopy(core::Event* pEvent, core::Channel& clientsChannel_) {
   
   journalStream().write(pEvent->asCharBuffer(), pEvent->size());
   journalStream().flush(); // TODO: not working
-  return true;
+  return bSuccess;
 }
 
 bool Dropcopy::shutdown() {
