@@ -32,3 +32,39 @@ Target path
 Go to File -> Project settings
 Click the Advanced button
 Click Done, then Done once more.
+
+Install - snapd
+
+  sudo apt update
+  sudo apt install snapd
+  sudo snap install snap-store
+
+Install - VSCode
+
+  sudo snap install code --classic
+  download .deb
+
+Install - c-lang
+
+  sudo apt install clang
+
+Install - Bazel
+
+  sudo apt install bazel-bootstrap
+
+  bazel build //test:test
+
+GIT
+
+  git clone https://github.com/foonson/green.git
+
+Linux - Isolate CPU
+
+  sudo vim /etc/default/grub
+  GRUB_CMDLINE_LINUX_DEFAULT="isolcpus=2,3"
+  sudo update-grub
+
+  ps -eo psr,cmd
+
+  taskset 0x4 ./test.o
+
