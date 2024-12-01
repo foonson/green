@@ -1,0 +1,6 @@
+token
+*.o
+bazel-bin
+bazel-out
+bazel-src
+bazel-testlogs
