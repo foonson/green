@@ -1,9 +1,10 @@
 #pragma once
 
-#include <time.h>
-#include <stdlib.h>
+#include <time.h>     // clock_gettime
+#include <stdlib.h>   // abs
 #include <functional>
 #include "util/UNum.h"
+#include "util/UThread.h"
 
 namespace test::clock {
 
@@ -19,13 +20,16 @@ namespace test::clock {
   }
 
   void test() {
+    // CPU
+    util::pinThreadToCore(2);
+
     util::stats<long> av; 
     util::stats<long> avD;
     long countD = 0;
     while (true) {
  
       long e = elapse([](){
-        for(int i=0;i<10;i++) {}
+        ;
       });
       if (e==0) continue;
 
@@ -57,13 +61,5 @@ namespace test::clock {
         );
       }
     };
-    /*
-    timespec ts1;
-    timespec ts2;
-    ::clock_gettime(CLOCK_MONOTONIC, &ts1);
-    ::clock_gettime(CLOCK_MONOTONIC, &ts2);
-    printf("%d %d\n", ts1.tv_sec, ts1.tv_nsec);
-    printf("%d %d\n", ts2.tv_sec, ts2.tv_nsec);
-    */
   }
 }
