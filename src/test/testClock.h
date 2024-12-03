@@ -5,10 +5,11 @@
 #include <functional>
 #include "util/UNum.h"
 #include "util/UThread.h"
+#include "util/UCPU.h"
 
 namespace test::clock {
 
-  long elapse(const std::function<void()>& func_) {
+  uint64_t elapse(const std::function<void()>& func_) {
     timespec ts1;
     timespec ts2;
     ::clock_gettime(CLOCK_MONOTONIC, &ts1);
@@ -19,16 +20,24 @@ namespace test::clock {
     return -1;
   }
 
+  uint64_t elapse2(const std::function<void()>& func_) {
+    uint64_t tick1 = util::cpuTick();
+    func_();
+    uint64_t tick2= util::cpuTick();
+    return tick2 - tick1;
+  }
+
+
   void test() {
     // CPU
-    util::pinThreadToCore(2);
+    util::pinThreadToCore(0);
 
     util::stats<long> av; 
     util::stats<long> avD;
     long countD = 0;
     while (true) {
  
-      long e = elapse([](){
+      long e = elapse2([](){
         ;
       });
       if (e==0) continue;

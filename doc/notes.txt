@@ -54,6 +54,17 @@ Install - Bazel
 
   bazel build //test:test
 
+Install - cmake
+
+  sudo apt install cmake
+
+Install - gtest
+  sudo apt install libgtest-dev
+  cd /usr/src/googletest
+  sudo cmake CMakeLists.txt
+  sudo make
+  sudo make install
+
 GIT
 
   git clone https://github.com/foonson/green.git
@@ -68,3 +79,10 @@ Linux - Isolate CPU
 
   taskset 0x4 ./test.o
 
+Linux - coredump
+  ulimit -c unlimited
+  /var/crash
+
+Linux - default compiler
+
+  update-alternatives --display c++

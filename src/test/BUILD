@@ -7,5 +7,8 @@ cc_binary (
   name="test",
   srcs=["test.cpp"],
   deps=["includes",
-        "//util:util"],  
+        "//util:util"],
+  copts=["-std=c++20",
+         "-D_LINUX",
+        ],
 )

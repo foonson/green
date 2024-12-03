@@ -8,13 +8,18 @@
 #ifndef UCPU_h
 #define UCPU_h
 
+#include <cstdint>
+
+#ifdef _MACOS
 #include <sys/sysctl.h>
+#endif
 
-namespace util::UCPU {
+namespace util {
 
-int coreCount() ;
-uint64_t cpuTick();
-uint64_t calcTickPerMilli();
+  int coreCount() ;
+  uint64_t cpuTick();
+  //uint64_t calcTickPerMilli();
 
 }
+
 #endif /* UCPU_h */
