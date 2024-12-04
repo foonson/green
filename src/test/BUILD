@@ -4,11 +4,23 @@ cc_library (
 )
 
 cc_binary (
-  name="test",
-  srcs=["test.cpp"],
+  name="main",
+  srcs=["main.cpp"],
   deps=["includes",
         "//util:util"],
   copts=["-std=c++20",
          "-D_LINUX",
+         "-fsanitize=address",
+         "-g",
         ],
+  linkopts=["-fsanitize=address"],
+)
+
+cc_test (
+  name="test",
+  srcs=["test.cpp"],
+  deps=["includes",
+        "//util:util"],
+  copts=["-std=c++20",],
+  linkopts=["-lgtest","-lgtest_main"]
 )

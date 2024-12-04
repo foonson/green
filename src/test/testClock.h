@@ -30,7 +30,7 @@ namespace test::clock {
 
   void test() {
     // CPU
-    util::pinThreadToCore(0);
+    util::pinThreadToCore(2);
 
     util::stats<long> av; 
     util::stats<long> avD;
