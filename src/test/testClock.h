@@ -2,42 +2,21 @@
 
 #include <time.h>     // clock_gettime
 #include <stdlib.h>   // abs
-#include <functional>
 #include "util/UNum.h"
-#include "util/UThread.h"
-#include "util/UCPU.h"
+//#include "util/UThread.h"
+//#include "util/UCPU.h"
+#include "UPerf.h"
 
 namespace test::clock {
 
-  uint64_t elapse(const std::function<void()>& func_) {
-    timespec ts1;
-    timespec ts2;
-    ::clock_gettime(CLOCK_MONOTONIC, &ts1);
-    func_();
-    ::clock_gettime(CLOCK_MONOTONIC, &ts2);
-    if (ts2.tv_sec==ts1.tv_sec) { return ts2.tv_nsec - ts1.tv_nsec; }
-    if (ts2.tv_sec==ts1.tv_sec+1) { return ts2.tv_nsec - ts1.tv_nsec + 1000000000; }
-    return -1;
-  }
-
-  uint64_t elapse2(const std::function<void()>& func_) {
-    uint64_t tick1 = util::cpuTick();
-    func_();
-    uint64_t tick2= util::cpuTick();
-    return tick2 - tick1;
-  }
-
-
   void test() {
-    // CPU
-    util::pinThreadToCore(2);
 
     util::stats<long> av; 
     util::stats<long> avD;
     long countD = 0;
     while (true) {
  
-      long e = elapse2([](){
+      long e = util::elapse2([](){
         ;
       });
       if (e==0) continue;

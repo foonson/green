@@ -10,10 +10,10 @@ cc_binary (
         "//util:util"],
   copts=["-std=c++20",
          "-D_LINUX",
-         "-fsanitize=address",
+         #"-fsanitize=address",
          "-g",
         ],
-  linkopts=["-fsanitize=address"],
+  #linkopts=["-fsanitize=address"],
 )
 
 cc_test (

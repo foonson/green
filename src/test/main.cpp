@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <csignal>
 #include <thread>
-#include "test1.h"
+#include <iostream>
+#include "util/UThread.h"
+
+//#include "test1.h"
 #include "testClock.h"
-//#include "util/UCPU.h"
+#include "testMemAlloc.h"
 
 void mainEnd() {
   uint64_t tick = util::cpuTick();
@@ -21,6 +24,13 @@ void registerSignalHandler() {
   std::signal(SIGINT, mySignalHandler);
 }
 
+void runTest() {
+  // CPU
+  util::pinThreadToCore(2);
+  //test::clock::test();
+  test::memAlloc::test();
+}
+
 int main() {
 /*
   int* x = new int[0];
@@ -32,8 +42,7 @@ int main() {
   printf("main started %ld\n", tick);
   registerSignalHandler();
   printf("hide cursor\033[?25l/n");
-  std::thread t(test::clock::test);
-  //test::clock::test();
+  std::thread t(runTest);
   //test1();
   t.join();
   mainEnd();
