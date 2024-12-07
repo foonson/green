@@ -3,6 +3,7 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 echo "export PATH=/opt/homebrew/bin:$PATH" >> ~/.bash_profile && source ~/.bash_profile
+echo "export PATH=/opt/homebrew/bin:$PATH" >> ~/.zshrc
 
 brew search sdl
 
@@ -15,6 +16,15 @@ brew info boost
 /opt/homebrew/Cellar/sdl2/2.0.14_1/include/SDL2
 /opt/homebrew/Cellar/sdl2/2.0.14_1/lib
 
+SDL_VERSION=2.0.14_1
+export SDL_VERSION=2.30.7
+export SDL_IMAGE_VERSION=2.8.2_1
+export BOOST_VERSION=1.86.0
+
+/opt/homebrew/Cellar/sdl2/$SDL_VERSION/include/SDL2
+/opt/homebrew/Cellar/sdl2/$SDL_VERSION/lib
+/opt/homebrew/Cellar/boost/$BOOST_VERSION
+
 
 config xcode Build Settings --> All --> Search Paths --> Header Serch Paths
 --> /usr/local/include
@@ -22,11 +32,9 @@ config Xcode General ->add Frameworks and Libraries --> libSDL2-2.0.0.dylib
 
 
 g++  -I/usr/include/SDL2/ -I./tetris/ -I/opt/homebrew/Cellar/sdl2/2.0.14_1/include/ tetris.cpp --std=c++17 -L/opt/homebrew/Cellar/sdl2/2.0.14_1/lib/   -lSDL2
-
-sig handling
+g++ -I/usr/include/SDL2/ -I. -I./tetris/ -I/opt/homebrew/Cellar/sdl2/$SDL_VERSION/include/SDL2/ -I/opt/homebrew/Cellar/sdl2_image/$SDL_IMAGE_VERSION/include/SDL2/  -I/opt/homebrew/Cellar/boost/$BOOST_VERSION/include/ tetris/tetris.cpp --std=c++17 -L/opt/homebrew/Cellar/sdl2/$SDL_VERSION/lib/ -L/opt/homebrew/Cellar/sdl2_image/$SDL_IMAGE_VERSION/lib/ -lSDL2 -lSDL2_image
 
 .zshrc
-
 
 Target path
 Go to File -> Project settings
@@ -82,7 +90,32 @@ Linux - Isolate CPU
 Linux - coredump
   ulimit -c unlimited
   /var/crash
+  /var/lib/apport/coredump/
+
+  readelf -s main.o  # read symbol table
+  strip # remove debug symbol from binary
+  readelf --sections --wide y.x
+  readelf --debug-dump
+  readelf -a strip.x  | grep Build
+
+  strings a.out | grep debug
+  https://www.tweag.io/blog/2023-11-23-debug-fission/
+  
 
 Linux - default compiler
 
   update-alternatives --display c++
+
+Bazel
+
+  bazel clean
+  bazel query --output=build //test:main
+  bazel build --strip=never
+
+ubuntu
+
+  terminal switch tab - hotkey - ctrl-page-up
+
+Visual Studio code 
+
+  switch file - hotkey - ctrl P

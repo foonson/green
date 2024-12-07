@@ -1,37 +1,40 @@
 #pragma once
+// 2024.11
 
 #include <tuple>
 
 namespace util {
   template<typename T>
-  class stats {
+  class NumStats {
   public:
-    stats () : _sum(0), _count(0) {}
-    std::tuple<T,T> add(T i_) {
+    NumStats () : _sum(0), _count(0), _sum2(0) {}
+    void add(T i_) {
         if (_count==0) {
             _max = i_;
             _min = i_;
         }
-        if (i_>_max) {
-            _max = i_;
-        }
-        if (i_<_min) {
-            _min = i_;
-        }
+        if (i_>_max) { _max = i_; }
+        if (i_<_min) { _min = i_; }
 
+        _sum2 += (i_*i_);
         _sum += i_;
         _count++;
-        return {_count, _sum};
     }
 
     T getAvg() {
         return _sum / _count;
     }
 
-    T _sum;
-    T _count;
-    T _max;
-    T _min;
+    T getVariance() {
+        T avg = getAvg();
+        return _sum2/_count - (avg*avg);
+    }
+
+    T _sum   = 0;
+    T _sum2  = 0; // sum of square
+    T _count = 0;
+    T _max   = 0;
+    T _min   = 0;
   };
 
   

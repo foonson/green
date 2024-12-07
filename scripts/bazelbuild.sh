@@ -1,2 +1,3 @@
-bazel build --copt=-D_LINUX=1 test:main
-bazel build --copt=-D_LINUX=1 test:test
+# 2024.11
+bazel build --config=debug test:main
+bazel build --config=debug test:test

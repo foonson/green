@@ -1,6 +1,8 @@
 token
 *.o
+*.x
 bazel-bin
 bazel-out
 bazel-src
 bazel-testlogs
+coredump

@@ -1,0 +1,6 @@
+# 2024.12.07
+build       --copt=-std=c++17
+build       --copt=-D_LINUX=1
+build:debug --strip=never
+build:debug --copt=-g
+#build:debug --copt=-gsplit-dwarf

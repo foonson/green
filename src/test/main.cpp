@@ -1,8 +1,13 @@
+// 2024.11
+
 #include <stdio.h>
 #include <csignal>
 #include <thread>
 #include <iostream>
+#include <functional>
+#include "util/UCommon.h"
 #include "util/UThread.h"
+#include "util/UConsole.h"
 
 //#include "test1.h"
 #include "testClock.h"
@@ -11,7 +16,7 @@
 void mainEnd() {
   uint64_t tick = util::cpuTick();
   printf("main end %ld\n", tick);
-  printf("show cursor\033[?25h/n");
+  util::showCursor();
 }
 
 void mySignalHandler(int signal_) {
@@ -21,14 +26,17 @@ void mySignalHandler(int signal_) {
 
 void registerSignalHandler() {
   std::signal(SIGTERM, mySignalHandler);
-  std::signal(SIGINT, mySignalHandler);
+  std::signal(SIGINT,  mySignalHandler);
+  std::signal(SIGSEGV, mySignalHandler);
 }
 
-void runTest() {
+void runThreadAtCore(uint8_t coreID_, std::function<void()> func_) {
   // CPU
-  util::pinThreadToCore(2);
-  //test::clock::test();
-  test::memAlloc::test();
+  if (!util::pinThreadToCore(coreID_)) {
+    util::logError("pinThreadToCore");
+    return;
+  }
+  func_();
 }
 
 int main() {
@@ -41,10 +49,20 @@ int main() {
   uint64_t tick = util::cpuTick();
   printf("main started %ld\n", tick);
   registerSignalHandler();
-  printf("hide cursor\033[?25l/n");
-  std::thread t(runTest);
+  util::hideCursor();    //util::showCursor();
+
+  for (uint8_t cpu:{0,1,2,3}) {
+
+    printf("cpu:%d\n", cpu);
+    std::thread t(runThreadAtCore, cpu, [](){ 
+      test::memAlloc::test();
+      test::clock::test(); 
+    });
+    t.join();
+
+  }
+
   //test1();
-  t.join();
   mainEnd();
   return -1;
 }
