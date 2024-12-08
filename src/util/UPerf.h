@@ -8,6 +8,9 @@
 
 namespace util {
 
+  /**
+   * @brief To get the nano-second difference of executing given function
+   */
   uint64_t elapse(const std::function<void()>& func_) {
     timespec ts1;
     timespec ts2;

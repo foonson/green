@@ -73,6 +73,14 @@ Install - gtest
   sudo make
   sudo make install
 
+Install - DOxygen
+  sudo apt install doxygen
+
+  doxygen -g
+  doxygen Doxyfile
+  python3 -m http.server 8000
+
+
 GIT
 
   git clone https://github.com/foonson/green.git
@@ -112,10 +120,11 @@ Bazel
   bazel query --output=build //test:main
   bazel build --strip=never
 
-ubuntu
+hotkey - ubuntu
 
-  terminal switch tab - hotkey - ctrl-page-up
+  terminal switch tab - hotkey - ctrl-page-up/down
 
-Visual Studio code 
+hotkey - Visual Studio code 
 
   switch file - hotkey - ctrl P
+  switch file - hotkey - ctrl-page-up/down

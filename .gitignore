@@ -6,3 +6,5 @@ bazel-out
 bazel-src
 bazel-testlogs
 coredump
+install
+bin

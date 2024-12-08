@@ -75,7 +75,7 @@ namespace test::memAlloc {
           statsAccess.add(eAccess);
         }
 
-        printf("i=%ld sum=%ld Add:%ld %ld [%ld %ld] Read:%ld %ld [%ld %ld]\r", i, sum, 
+        printf("\ri=%ld sum=%ld Add:%ld %ld [%ld %ld] Read:%ld %ld [%ld %ld] ", i, sum, 
           statsInsert.getAvg(),
           statsInsert.getVariance(),
           statsInsert._min,

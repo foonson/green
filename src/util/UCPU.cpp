@@ -12,31 +12,38 @@
 #include <mach/mach_time.h>
 #endif
 
+#include <thread>
 #include "util/UTime.h"
 
 namespace util {
 
 
 int coreCount() {
+  int numCPU = 0;
+#ifdef _LINUX
+  numCPU = std::thread::hardware_concurrency();
+#endif
+
+#ifdef _MACOS
   int mib[4];
-  int numCPU;
   size_t len = sizeof(numCPU);
 
   /* set the mib for hw.ncpu */
-  //mib[0] = CTL_HW;
-  //mib[1] = HW_AVAILCPU;  // alternatively, try HW_NCPU;
+  mib[0] = CTL_HW;
+  mib[1] = HW_AVAILCPU;  // alternatively, try HW_NCPU;
 
   /* get the number of CPUs from the system */
-  //sysctl(mib, 2, &numCPU, &len, NULL, 0);
+  sysctl(mib, 2, &numCPU, &len, NULL, 0);
 
   if (numCPU < 1)
   {
-    //mib[1] = HW_NCPU;
-    //sysctl(mib, 2, &numCPU, &len, NULL, 0);
+    mib[1] = HW_NCPU;
+    sysctl(mib, 2, &numCPU, &len, NULL, 0);
     if (numCPU < 1) {
       numCPU = 1;
     }
   }
+#endif
   
   return numCPU;
 }

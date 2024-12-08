@@ -8,8 +8,8 @@
 #include "util/UCommon.h"
 #include "util/UThread.h"
 #include "util/UConsole.h"
+#include "util/UCPU.h"
 
-//#include "test1.h"
 #include "testClock.h"
 #include "testMemAlloc.h"
 
@@ -47,7 +47,7 @@ int main() {
 */
 
   uint64_t tick = util::cpuTick();
-  printf("main started %ld\n", tick);
+  printf("main started %ld Core:%d\n", tick, util::coreCount());
   registerSignalHandler();
   util::hideCursor();    //util::showCursor();
 
@@ -62,7 +62,6 @@ int main() {
 
   }
 
-  //test1();
   mainEnd();
   return -1;
 }

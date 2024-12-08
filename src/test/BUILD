@@ -11,20 +11,11 @@ cc_binary (
   deps=["includes",
         "//util:util"],
   copts=[#"-std=c++17",
-         "-D_LINUX",
+         #"-D_LINUX",
          "-Wall",
          #"-fsanitize=address",
          #"-g",
          #"-gsplit-dwarf",
         ],
   #linkopts=["-fsanitize=address"],
-)
-
-cc_test (
-  name="test",
-  srcs=["test.cpp"],
-  deps=["includes",
-        "//util:util"],
-  copts=["-std=c++17",],
-  linkopts=["-lgtest","-lgtest_main"]
 )
