@@ -12,7 +12,7 @@
 namespace core {
 
 Event::Event() {
- _tick = util::UCPU::cpuTick();
+ _tick = util::cpuTick();
 }
 
 }

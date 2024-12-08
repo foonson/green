@@ -12,6 +12,7 @@
 #include <SDL_image.h>
 #include "core/UI.h"
 #include "core/Event.h"
+#include "util/ULog.h"
 
 namespace core {
 
@@ -47,17 +48,34 @@ public:
 
     _pWindow = SDL_CreateWindow(
       static_cast<TUI*>(this)->windowTitle().data(),
-      100, //SDL_WINDOWPOS_UNDEFINED,
-      100, //SDL_WINDOWPOS_UNDEFINED,
-      800,
-      400,
+      000, //SDL_WINDOWPOS_UNDEFINED,
+      000, //SDL_WINDOWPOS_UNDEFINED,
+      1000,
+      1000,
       SDL_WINDOW_SHOWN);
 
     //_pRender = SDL_CreateRenderer(_pWindow, -1, SDL_RENDERER_ACCELERATED);
     _pRenderer = SDL_CreateRenderer(_pWindow, -1, 0);
 
-    SDL_Surface* pSurface = IMG_Load("/Users/steve/green/background.jpg");
+    if (_pRenderer==nullptr) {
+      std::cout << "SDL_CreateRenderer error" << "\n";
+      return false;
+    }
+
+    //SDL_Surface* pSurface = IMG_Load("/Users/steve/green/background.jpg");
+    SDL_Surface* pSurface = IMG_Load("/home/parallels/green/background.jpg");
+    if (pSurface==nullptr) {
+      std::cout << "IMG_Load error\n";
+      return false;
+    }
+
     _pTxBackground = SDL_CreateTextureFromSurface(renderer(), pSurface);
+    if (_pTxBackground==nullptr) {
+      std::cout << "SDL_CreateTextureFromSurface error\n";
+      return false;
+    }
+
+    // TODO: RAII release
     SDL_FreeSurface(pSurface);
 
     return true;
@@ -69,14 +87,20 @@ public:
     Base::shutdown();
   }
   
-  void render(core::Event* pEvent_) {
+  bool render(core::Event* pEvent_) {
 
+    // TODO: handle error
     auto pRenderer = renderer();
-    SDL_RenderCopy(pRenderer, _pTxBackground, NULL, NULL);
+    auto res = SDL_RenderCopy(pRenderer, _pTxBackground, NULL, NULL);
+    if (res!=0) {
+      util::logError("SDL_RenderCopy error");
+    }
         
-    static_cast<TUI*>(this)->renderFrame(pRenderer, pEvent_);
+    bool bRet = static_cast<TUI*>(this)->renderFrame(pRenderer, pEvent_);
 
     SDL_RenderPresent(pRenderer);
+
+    return true;
   }
   
   SDL_Texture* txBackground() { return _pTxBackground; }

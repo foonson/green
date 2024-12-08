@@ -18,7 +18,7 @@ namespace util {
 
   int coreCount() ;
   uint64_t cpuTick();
-  //uint64_t calcTickPerMilli();
+  uint64_t calcTickPerMilli();
 
 }
 

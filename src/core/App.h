@@ -53,7 +53,7 @@ public:
   
   bool initialize(int argc_, const char * argv_[]) {
     // Start tick
-    _startTick = util::UCPU::cpuTick();
+    _startTick = util::cpuTick();
 
     // Register Signal Handler
     registerSignalHandler();
@@ -84,8 +84,8 @@ public:
 
     // Initialize ticker
     std::cout << "Start CPU tick:" << _startTick << "\n";
-    std::cout << "coreCount:" << util::UCPU::coreCount() << "\n";
-    _tickPerMilli = util::UCPU::calcTickPerMilli();
+    std::cout << "coreCount:" << util::coreCount() << "\n";
+    _tickPerMilli = util::calcTickPerMilli();
     _uiThrottle.intervalMicro(100);
     _uiThrottle.tickPerMilli(_tickPerMilli);
     
@@ -250,7 +250,7 @@ public:
     context().shutdown();
     if (config().needDropcopy()) { dropcopy().shutdown(); }
     
-    uint64_t endTick = util::UCPU::cpuTick();
+    uint64_t endTick = util::cpuTick();
     std::cout << (endTick - _startTick) / _tickPerMilli << "ms\n";
     return true;
   }

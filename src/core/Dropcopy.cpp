@@ -36,10 +36,10 @@ bool Dropcopy::dropcopy(core::Event* pEvent, core::Channel& clientsChannel_) {
   if (_dcSeqno%100==0) {
     std::cout << _dcSeqno << "\n";
   }
-  std::cout << util::UCPU::cpuTick() << " ";
+  std::cout << util::cpuTick() << " ";
   pEvent->humanReader();
   if (pEvent->eventType()==kKeyEvent12) {
-    std::cout << util::UCPU::cpuTick() << " ";
+    std::cout << util::cpuTick() << " ";
     ;
   }
   

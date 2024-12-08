@@ -13,6 +13,7 @@
 #endif
 
 #include <thread>
+#include <chrono>
 #include "util/UTime.h"
 
 namespace util {
@@ -61,21 +62,18 @@ uint64_t cpuTick() {
   return tick;
 }
 
-/*
 uint64_t calcTickPerMilli() {
   
   auto t1 = util::UTime::now();
   uint64_t tick1 = util::cpuTick();
   uint64_t j=0;
-  for (int i=0;i<100000;i++) {
-    j++;
-  }
+
+  using namespace std::chrono_literals;
+  std::this_thread::sleep_for(10ms);
   auto t2 = util::UTime::now();
   uint64_t tick2 = util::cpuTick();
   auto x = double(tick2-tick1) / UTime::diffMilli(t1, t2);
   return x;
 }
-*/
-
 
 }

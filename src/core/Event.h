@@ -10,6 +10,7 @@
 
 #include "core/includes.h"
 #include <unordered_map>
+#include <functional>
 
 #define class_Event(CLASSNAME, BASECLASS) \
 class CLASSNAME : public BASECLASS { \

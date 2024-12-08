@@ -1,0 +1,1 @@
+cppcheck --enable=all --disable=unusedFunction src/

@@ -1,6 +1,12 @@
 # 2024.12.07
 build       --copt=-std=c++17
 build       --copt=-D_LINUX=1
+build       --copt=-I/usr/include/boost
+build       --copt=-I/usr/include/SDL2
+build       --copt=-D_REENTRANT
+build       --linkopt=-lSDL2
+build       --linkopt=-lSDL2_image
+#build       --copt=-L/usr/lib/aarch64-linux-gnu
 build:debug --strip=never
 build:debug --copt=-g
 #build:debug --copt=-gsplit-dwarf

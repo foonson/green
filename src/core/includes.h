@@ -11,5 +11,7 @@
 #include <iostream>
 #include <string>
 #include <string_view>
+#include <stdint.h>
+#include <cassert>
 
 #endif /* includes_h */

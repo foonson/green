@@ -107,7 +107,12 @@ public:
   auto masterPort()                  { return _masterPort; }
 
   std::string _masterHost = "127.0.0.1";
-  std::string _rootPath = "/Users/steve/green/";
+  std::string _rootPath = 
+#ifdef _LINUX
+    "/home/parallels/";
+#else
+    "/Users/steve/green/";
+#endif
   std::string _journalPathName;
   uint16_t    _masterPort;
   ConfigMode  _mode;

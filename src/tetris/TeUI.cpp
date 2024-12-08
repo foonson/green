@@ -7,10 +7,11 @@
 
 #include "TeUI.h"
 #include "TeApp.h"
+#include "util/ULog.h"
 
 namespace tetris {
 
-void TeUI::renderFrame(SDL_Renderer* pRenderer_, core::Event* pEvent_) {
+bool TeUI::renderFrame(SDL_Renderer* pRenderer_, core::Event* pEvent_) {
 
   //SDL_RenderCopy(pRenderer, _pTxBackground, NULL, NULL);
   const auto& busCenter = TeApp::app().busCenter();
@@ -25,10 +26,14 @@ void TeUI::renderFrame(SDL_Renderer* pRenderer_, core::Event* pEvent_) {
     rect.y = *std::get<1>(xy);
     rect.w = 100;
     rect.h = 100;
-    //printf("%d %d %d %d\n", rect.x, rect.y, rect.w, rect.h);
-    SDL_RenderFillRect(pRenderer_, &rect);
+    printf("%d %d %d %d\n", rect.x, rect.y, rect.w, rect.h);
+    auto res = SDL_RenderFillRect(pRenderer_, &rect);
+    if (res!=0) {
+      util::logError("SDL_RenderFillRect error");
+      return false;
+    }
   }
-
+  return true;
 }
 
 std::string_view TeUI::windowTitle() {

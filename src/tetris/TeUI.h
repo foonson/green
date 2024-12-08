@@ -17,7 +17,7 @@ namespace tetris {
 class TeUI : public core::SDLUI<TeUI> {
 public:
   std::string_view windowTitle() ;
-  void renderFrame(SDL_Renderer* pRenderer_, core::Event* pEvent_);
+  bool renderFrame(SDL_Renderer* pRenderer_, core::Event* pEvent_);
 };
 
 }

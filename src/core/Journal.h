@@ -39,7 +39,7 @@ public:
     
   bool recoverFromJournal(EventQueue& evalEvents_, std::function<void()> fnEvalOnce ) {
     
-    std::ifstream js(pathName());
+    std::ifstream js{std::string{pathName()}};
     do {
       Event* pEvent = eventFactory().createEventFromStream(
         [&js](char* buffer_, EventSize size_) -> bool {
@@ -63,7 +63,7 @@ public:
   void readJournal() {
 
     std::cout << _journalPathName << "\n";
-    std::ifstream js(_journalPathName);
+    std::ifstream js{std::string{_journalPathName}};
     
     do {
 

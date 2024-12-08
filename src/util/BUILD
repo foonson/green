@@ -2,9 +2,13 @@
 
 cc_library (
   name="util",
-  srcs=["UCPU.cpp"],
+  srcs=["Tick.cpp","UCPU.cpp","USocket.cpp","UTime.cpp"],
   hdrs=glob(["*.h"]),
-  visibility=["//test:__pkg__"],
+  visibility=["//test:__pkg__",
+              "//green:__pkg__",
+              "//core:__pkg__",
+              "//tetris:__pkg__",              
+              ],
 )
 
 cc_test (

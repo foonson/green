@@ -11,7 +11,7 @@
 namespace util {
 
 bool Tick::pass() {
-  auto now = util::UCPU::cpuTick();
+  auto now = util::cpuTick();
   if (now < _next) { return false; }
   
   //_last = now;

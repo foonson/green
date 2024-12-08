@@ -80,6 +80,24 @@ Install - DOxygen
   doxygen Doxyfile
   python3 -m http.server 8000
 
+Install - cppcheck
+
+  sudo apt install cppcheck
+
+  cppcheck --enable=all
+  cppcheck --list-checks
+
+Install - boost
+
+  sudo apt install libboost-all-dev
+
+Install - SDL
+
+  sudo apt install libsdl2-dev
+  sudo apt install libsdl2-image-dev
+
+  sdl2-config  --libs
+  pkg-config --cflags --libs sdl2
 
 GIT
 
