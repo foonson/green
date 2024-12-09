@@ -54,8 +54,8 @@ public:
       1000,
       SDL_WINDOW_SHOWN);
 
-    //_pRender = SDL_CreateRenderer(_pWindow, -1, SDL_RENDERER_ACCELERATED);
-    _pRenderer = SDL_CreateRenderer(_pWindow, -1, 0);
+    _pRenderer = SDL_CreateRenderer(_pWindow, -1, SDL_RENDERER_ACCELERATED);
+    //_pRenderer = SDL_CreateRenderer(_pWindow, -1, 0);
 
     if (_pRenderer==nullptr) {
       std::cout << "SDL_CreateRenderer error" << "\n";

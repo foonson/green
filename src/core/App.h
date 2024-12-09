@@ -86,11 +86,11 @@ public:
     std::cout << "Start CPU tick:" << _startTick << "\n";
     std::cout << "coreCount:" << util::coreCount() << "\n";
     _tickPerMilli = util::calcTickPerMilli();
-    _uiThrottle.intervalMicro(100);
+    _uiThrottle.intervalMicro(100000);
     _uiThrottle.tickPerMilli(_tickPerMilli);
     
     util::Tick evalThrottle;
-    evalThrottle.intervalMicro(100);
+    evalThrottle.intervalMicro(1000);
     evalThrottle.tickPerMilli(_tickPerMilli);
     std::cout << "TickPerMilli _uiTick:"  << _uiThrottle.tickPerMilli() << "\n";
     std::cout << "TickPerMilli evalTick:" << evalThrottle.tickPerMilli() << "\n";
@@ -140,12 +140,12 @@ public:
     }
     busCenter().setExitFlag(false);
     
-    std::thread uiThread;
     std::thread dropcopyThread;
+    std::thread evalThread;
 
-    if constexpr (TApp::TUI::REQUIRE_UI_THREAD) {
-      uiThread = std::thread(&App::uiLoop, this);
-    }
+    //if constexpr (TApp::TUI::REQUIRE_UI_THREAD) {
+    //  uiThread = std::thread(&App::uiLoop, this);
+    //}
 
     if constexpr (TApp::REQUIRE_DROPCOPY_THREAD) {
       if (config().needDropcopy()) {
@@ -153,13 +153,15 @@ public:
       }
     }
 
-    busCenter().evalLoop();
+    evalThread = std::thread(&TBusCenter::evalLoop, &busCenter());
 
-    std::cout << "Wait UI thread finish\n";
+    this->uiLoop();
+
+    std::cout << "Wait UILoop finish\n";
     healthCheck(true);
-    if constexpr (TApp::TUI::REQUIRE_UI_THREAD) {
-      uiThread.join();
-    }
+    //if constexpr (TApp::TUI::REQUIRE_UI_THREAD) {
+      evalThread.join();
+    //}
     std::cout << "Wait Dropcopy thread finish\n";
     healthCheck(true);
     if constexpr (TApp::REQUIRE_DROPCOPY_THREAD) {
@@ -197,7 +199,6 @@ public:
         }
 
       } while(true);
-        
     }
   }
   

@@ -11,8 +11,6 @@
 #include <string>
 #include <string_view>
 
-//#include <stdio.h>
-//#include <stdlib.h>
 #include <sys/socket.h>
 //#include <sys/types.h>
 #include <arpa/inet.h> // inet_addr
@@ -23,13 +21,22 @@
 #include <errno.h>
 
 #include "USocket.h"
+#include "ULog.h"
 
 namespace util {
 
-USocket::USocket() {
-}
-
-USocket::~USocket() {
+bool setNonBlocking(int fd_) {
+  int flags = fcntl(fd_, F_GETFL, 0);
+  if (flags==-1) {
+    util::logError("fcntl F_GETFL error");
+    return false;
+  }
+  flags = fcntl(fd_, F_SETFL, flags | O_NONBLOCK);
+  if (flags==-1) {
+    util::logError("fcntl F_SETFL error");
+    return false;
+  }
+  return true;
 }
 
 void getSocketAddress(
@@ -52,8 +59,9 @@ bool ServerSocket::listen(const std::string_view host_, uint16_t port_) {
   
   if (_nonBlock) {
     std::cout << "nonblock socket\n";
-    int res = fcntl(_servSocket, F_SETFL, O_NONBLOCK);
-    if (res<0) {
+    //int res = fcntl(_servSocket, F_SETFL, O_NONBLOCK);
+    bool bRes = setNonBlocking(_servSocket);
+    if (!bRes) {
       std::cerr << "Server fcntl O_NONBLOCK failure. " << strerror(errno) << "\n" ;
       return false;
     }
@@ -93,7 +101,13 @@ bool ServerSocket::acceptClient() {
 
   char clientName[INET_ADDRSTRLEN];
   inet_ntop(AF_INET, &clntAddr.sin_addr, clientName, INET_ADDRSTRLEN);
-  
+
+  if(_nonBlock) {
+    if (!setNonBlocking(_clientConnection)) {
+      util::logError("acceptClient setNonBlocking fail");
+    }
+  }
+
   std::cout << "Accept client " << clientName << ":" << ntohs(clntAddr.sin_port) << "\n" ;
   
   return true;
@@ -110,7 +124,6 @@ ClientSocket::~ClientSocket() {
   close(_clntSocket);
   _clntSocket = -1;
 }
-
 
 bool ClientSocket::connect(const std::string_view host_, uint16_t port_) {
   
@@ -134,6 +147,8 @@ bool ClientSocket::connect(const std::string_view host_, uint16_t port_) {
     return false;
   }
   std::cout << "Client connected " << host_ << ":" << port_ << "\n" ;
+
+  setNonBlocking(_clntSocket);
 
   return true;
 }

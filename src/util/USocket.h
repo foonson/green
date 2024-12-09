@@ -20,8 +20,8 @@ public:
 
 protected:
   bool _nonBlock = true;
-  USocket();
-  ~USocket();
+  USocket() = default;
+  ~USocket() = default;
 
 };
 

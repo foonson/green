@@ -26,7 +26,6 @@ bool TeUI::renderFrame(SDL_Renderer* pRenderer_, core::Event* pEvent_) {
     rect.y = *std::get<1>(xy);
     rect.w = 100;
     rect.h = 100;
-    printf("%d %d %d %d\n", rect.x, rect.y, rect.w, rect.h);
     auto res = SDL_RenderFillRect(pRenderer_, &rect);
     if (res!=0) {
       util::logError("SDL_RenderFillRect error");
