@@ -13,5 +13,6 @@
 #include <string_view>
 #include <stdint.h>
 #include <cassert>
+#include "util/ULog.h"
 
 #endif /* includes_h */

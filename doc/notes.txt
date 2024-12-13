@@ -1,5 +1,4 @@
 
-
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 echo "export PATH=/opt/homebrew/bin:$PATH" >> ~/.bash_profile && source ~/.bash_profile
@@ -132,11 +131,20 @@ Linux - default compiler
 
   update-alternatives --display c++
 
+Linux - perf
+
+  /etc/sysctl.conf
+  kernel.perf_event_paranoid = -1
+  cat /proc/sys/kernel/perf_event_paranoid
+
+  perf stat ./main.x -c 0  -t 3
+
 Bazel
 
   bazel clean
   bazel query --output=build //test:main
   bazel build --strip=never
+  .bazelrc
 
 hotkey - ubuntu
 
@@ -146,3 +154,4 @@ hotkey - Visual Studio code
 
   switch file - hotkey - ctrl P
   switch file - hotkey - ctrl-page-up/down
+

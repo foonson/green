@@ -85,7 +85,7 @@ public:
 
       auto rc = core::push(dropcopyEvents(), pEvent);
       if (!rc) {
-        std::cerr << "Drop event - dropcopyEvents 1\n";
+        std::cerr << "Drop event - dropcopyEvents evalOnce\n";
         core::EventFactory::releaseEvent(pEvent);
       }
     }
@@ -98,7 +98,8 @@ public:
       
       auto rc = core::push(dropcopyEvents(), pEvent);
       if (!rc) {
-        std::cerr << "Drop event - dropcopyEvents 2\n";
+        //pEvent->humanReader();
+        std::cerr << "Drop event - dropcopyEvents evalOnce 2\n";
         core::EventFactory::releaseEvent(pEvent);
       }
     }

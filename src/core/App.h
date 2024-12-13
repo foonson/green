@@ -194,7 +194,7 @@ public:
         // Resolved TODO: break SPSC
         auto rc = core::push(busCenter().dropcopyEvents(), pEvent);
         if (!rc) {
-          std::cerr << "Drop event - dropcopyEvents 3\n";
+          std::cerr << "Drop event - dropcopyEvents uiLoop\n";
           core::EventFactory::releaseEvent(pEvent);
         }
 

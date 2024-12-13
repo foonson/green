@@ -1,0 +1,1 @@
+perf stat ./main.x -c 1 -t 1

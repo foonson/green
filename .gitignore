@@ -1,6 +1,7 @@
 token
 *.o
 *.x
+a.out
 bazel-bin
 bazel-out
 bazel-src

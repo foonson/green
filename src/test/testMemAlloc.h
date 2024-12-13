@@ -32,7 +32,7 @@ namespace test::memAlloc {
     }
 
     int _index = 0;
-    T _data[100000];
+    T _data[10001];
   };
 
   template <typename T, typename U>
@@ -58,34 +58,39 @@ namespace test::memAlloc {
     util::NumStats<long> statsInsert;
     util::NumStats<long> statsAccess;
     uint64_t total = 10000;
+    uint64_t sum=0;
     for (uint64_t u=0;u<total;u++) {
-        i = fnShiftIndex_(u, total);
+      i = fnShiftIndex_(u, total);
 
-        uint64_t sum=0;
-        auto eInsert = util::elapse2([&map_,i](){
-          map_.emplace(i,i);
+      auto eInsert = util::elapse2([&map_,i,u](){
+        map_.emplace(i,u);
+      });
+      statsInsert.add(eInsert);
+
+      for (uint64_t v=0;v<u;v++) {
+        uint64_t j = fnShiftIndex_(v, total);
+        auto eAccess = util::elapse2([&map_,j,&sum](){
+          if (map_.find(j)==map_.end()) {
+            //assert(false, "item not in map");
+            std::abort();
+          }
+          sum+=map_[j];
         });
-
-        statsInsert.add(eInsert);
-        for (uint64_t v=0;v<u;v++) {
-          uint64_t j = shiftIndex(v, total);
-          auto eAccess = util::elapse2([&map_,j,&sum](){
-            sum+=map_[j];
-          });
-          statsAccess.add(eAccess);
-        }
-
-        printf("\ri=%ld sum=%ld Add:%ld %ld [%ld %ld] Read:%ld %ld [%ld %ld] ", i, sum, 
-          statsInsert.getAvg(),
-          statsInsert.getVariance(),
-          statsInsert._min,
-          statsInsert._max,
-          statsAccess.getAvg(),
-          statsAccess.getVariance(),
-          statsAccess._min,
-          statsAccess._max
-        );
+        statsAccess.add(eAccess);
+      }
     }
+    printf("sum=%ld Add:%ld %ld [%ld %ld] Read:%ld %ld [%ld %ld] ", sum, 
+      statsInsert.getAvg(),
+      statsInsert.getVariance(),
+      statsInsert._min,
+      statsInsert._max,
+      statsAccess.getAvg(),
+      statsAccess.getVariance(),
+      statsAccess._min,
+      statsAccess._max
+    );
+
+
     printf("\n");
   }
 
@@ -110,10 +115,14 @@ namespace test::memAlloc {
     testBase(m1, noShiftIndex);
   }
 
-  void test() {
-    printf("MyMemAlloc\n");
-    runWithMyMemAlloc();
-    printf("Default MemAlloc\n");
-    runWithoutMyMemAlloc();
+  void test(int para_) {
+    if (para_==1) {
+      printf("MyMemAlloc\n");
+      runWithMyMemAlloc();
+    }
+    if (para_==2) {
+      printf("Default MemAlloc\n");
+      runWithoutMyMemAlloc();
+    }
   }
 }

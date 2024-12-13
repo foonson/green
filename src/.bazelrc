@@ -9,4 +9,6 @@ build       --linkopt=-lSDL2_image
 #build       --copt=-L/usr/lib/aarch64-linux-gnu
 build:debug --strip=never
 build:debug --copt=-g
+build:debug --copt=-fsanitize=address
+build:debug --linkopt=-fsanitize=address
 #build:debug --copt=-gsplit-dwarf

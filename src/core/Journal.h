@@ -39,6 +39,7 @@ public:
     
   bool recoverFromJournal(EventQueue& evalEvents_, std::function<void()> fnEvalOnce ) {
     
+    util::log("recoverFromJournal");
     std::ifstream js{std::string{pathName()}};
     do {
       Event* pEvent = eventFactory().createEventFromStream(
@@ -57,6 +58,7 @@ public:
       fnEvalOnce();
       
     } while (true);
+    util::log("recoverFromJournal finish");
     return true;
   }
   
