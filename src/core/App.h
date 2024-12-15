@@ -85,7 +85,7 @@ public:
     // Initialize ticker
     std::cout << "Start CPU tick:" << _startTick << "\n";
     std::cout << "coreCount:" << util::coreCount() << "\n";
-    _tickPerMilli = util::calcTickPerMilli();
+    _tickPerMilli = util::getTickPerMilli();
     _uiThrottle.intervalMicro(100000);
     _uiThrottle.tickPerMilli(_tickPerMilli);
     

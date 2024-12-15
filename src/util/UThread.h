@@ -19,4 +19,13 @@ namespace util {
     }
     return true;
   }
+
+  void runThreadAtCore(uint8_t coreID_, std::function<void()> func_) {
+    // CPU
+    if (!util::pinThreadToCore(coreID_)) {
+      util::logError("pinThreadToCore");
+      return;
+    }
+    func_();
+  }
 }

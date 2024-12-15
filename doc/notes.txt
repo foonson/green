@@ -139,6 +139,16 @@ Linux - perf
 
   perf stat ./main.x -c 0  -t 3
 
+  sudo -s
+
+  cat /sys/kernel/debug/tracing/events/syscalls/sys_enter_read/enable
+  echo 1 > /sys/kernel/debug/tracing/events/syscalls/sys_enter_read/enable
+
+
+Linux - other
+  
+  uname -a
+
 Bazel
 
   bazel clean

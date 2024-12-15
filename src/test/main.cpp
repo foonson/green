@@ -31,21 +31,24 @@ void registerSignalHandler() {
   std::signal(SIGSEGV, mySignalHandler);
 }
 
-void runThreadAtCore(uint8_t coreID_, std::function<void()> func_) {
-  // CPU
-  if (!util::pinThreadToCore(coreID_)) {
-    util::logError("pinThreadToCore");
-    return;
-  }
-  func_();
-}
-
-
-// ./main.x -c 4 -t 1
 int main(int argc_, char* argv_[]) {
 
+  util::StopWatch sw;
+  sw.start();
+  printf("-c CPUID\n"
+  "-t 1:MyMemAlloc\n"
+  "-t 2:Default memAlloc\n"
+  "-t 3:clock\n"
+  "-t 4:new delete memorypool\n"
+  "-t 5:new delete default\n"
+  "-t 6:concat string\n"
+
+  );
+
+  uint64_t tickPerMilli = util::getTickPerMilli();
+
   int cpuID = 2;
-  int testcaseID = 1;
+  int testcaseID = 4;
 
   int opt = 0;
   while ((opt=getopt(argc_, argv_, "c:t:"))!=-1) {
@@ -62,19 +65,28 @@ int main(int argc_, char* argv_[]) {
   registerSignalHandler();
   util::hideCursor();    //util::showCursor();
 
-  std::thread t(runThreadAtCore, cpuID, [testcaseID](){ 
-    if (testcaseID==1) {
-      test::memAlloc::test(1);
-    }
-    if (testcaseID==2) {
-      test::memAlloc::test(2);
-    }
-    if (testcaseID==3) {
-      test::clock::test(); 
+  std::string s;
+  auto f = [&s](const size_t i){
+        s += (char)((i%52) + 'A') ;
+        //s += s;
+      };
+  std::thread t(util::runThreadAtCore, cpuID, [testcaseID, &f, &s](){ 
+    switch(testcaseID) {
+      case 1: test::memAlloc::test(1); break;
+      case 2: test::memAlloc::test(2); break;
+      case 3: test::clock::test(); break;
+      case 4: test::newdelete::test(1); break;
+      case 5: test::newdelete::test(2); break;
+      case 6: { 
+        util::benchmark(f, 100000000);
+        printf("%d\n",s.length());
+      }  break;
     }
   });
   t.join();
 
+  sw.stop();
+  printf("millisecond:%dms\n", sw.getElapsedMilli());
   mainEnd();
   return -1;
 }

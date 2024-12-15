@@ -66,7 +66,6 @@ uint64_t calcTickPerMilli() {
   
   auto t1 = util::UTime::now();
   uint64_t tick1 = util::cpuTick();
-  uint64_t j=0;
 
   using namespace std::chrono_literals;
   std::this_thread::sleep_for(10ms);
@@ -74,6 +73,11 @@ uint64_t calcTickPerMilli() {
   uint64_t tick2 = util::cpuTick();
   auto x = double(tick2-tick1) / UTime::diffMilli(t1, t2);
   return x;
+}
+
+uint64_t getTickPerMilli() {
+  static uint64_t _tickPerMilli = calcTickPerMilli();
+  return _tickPerMilli;
 }
 
 }

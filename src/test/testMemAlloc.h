@@ -6,6 +6,138 @@
 #include "util/UPerf.h"
 #include "util/UNum.h"
 
+namespace test {
+  int noShiftIndex(const int u_, const int ) { return u_; }
+
+  int shiftIndex(const int u_, const int total_) {
+    if (u_%2==0) {
+      return u_/2;
+    } else {
+      //return total_/2 + u_/2 ;
+      return total_-1 - u_/2;
+    }
+  }
+}
+
+namespace test::newdelete {
+
+  struct HugeObject {
+    bool dirty=false;
+    char buffer[10000];
+  };
+
+  template <typename T, size_t N>
+  class NaiveMemoryPool {
+  public:
+    NaiveMemoryPool() {
+      size_t pageNum;
+      if ((N % pageSize)==0) {
+        pageNum = N/pageSize;
+      } else {
+        pageNum = N/pageSize+1;
+      }
+      for (size_t i;i<pageNum;i++) {
+        _pages[i] = new T[pageSize];
+      }
+    }
+
+    T* newObject() {
+      size_t pageNum = _index/pageSize;
+      auto page = _pages[pageNum];
+      auto p = &(page[_index%pageSize]);
+      _index++;
+      return p;
+    }
+
+    void releaseObject(T* o_) {
+    }
+
+    static constexpr int pageSize = 10000;
+    std::array<T*, N/pageSize+1> _pages;
+    size_t _index = 0;
+  };
+
+  template <typename T>
+  class NaiveMemoryPoolOndemand {
+
+  public:
+    //NaiveMemoryPoolOndemand() {
+    //}
+
+    T* newObject() {
+      return new T;
+    }
+
+    void releaseObject(T* o_) {
+      delete o_;
+    }
+  };
+
+  template<typename POOL>
+  void testBase(const size_t total_) {
+ 
+    HugeObject* pdata[total_];
+
+    util::NumStats newStats;
+    util::NumStats deleteStats;
+
+    util::StopWatch swTest;
+
+    swTest.start();
+    POOL pool;
+    auto poolTime = swTest.getElapsedMilli();
+
+
+    swTest.start();
+    for (size_t i=0;i<total_;i++) {
+      util::StopWatch sw;
+      sw.start();
+      pdata[i] = pool.newObject();
+      sw.stop();
+      pdata[i]->buffer[0] = (i%52) + 'A';
+      pdata[i]->buffer[2] = '\0';
+      newStats.add(sw.getElapsedTick());
+    }
+
+    for (size_t i=0;i<total_;i++) {
+      auto j = shiftIndex(i, total_);
+      pdata[i]->buffer[1] = (j%52) + 'A';
+      //printf("%s",pdata[j]->buffer);
+    }
+    //printf("\n");
+
+    for (size_t i=0;i<total_;i++) {
+      auto j = shiftIndex(i, total_);
+      util::StopWatch sw;
+      sw.start();
+      pool.releaseObject(pdata[j]);
+      sw.stop();
+      deleteStats.add(sw.getElapsedTick());
+    }
+
+    std::printf("Total:%d alloc new:%ld %ld delete:%ld %ld pre:%ldms loop:%ldms\n", 
+      total_, 
+      newStats.getAvg(), 
+      newStats.getVariance(), 
+      deleteStats.getAvg(),
+      deleteStats.getVariance(),
+      poolTime,
+      swTest.getElapsedMilli()
+    );
+  }
+
+  void test(int mode_) {
+    constexpr int total=100000;
+    if (mode_==1) {
+      printf("NaiveMemoryPool\n");
+      testBase<NaiveMemoryPool<HugeObject, total>>(total);;
+    } else if (mode_==2) {
+      printf("NaiveMemoryPoolOndemand\n");
+      testBase<NaiveMemoryPoolOndemand<HugeObject>>(total);;
+    }
+  }
+}
+
 namespace test::memAlloc {
 
   template <typename T>
@@ -20,7 +152,6 @@ namespace test::memAlloc {
     T* allocate(std::size_t n_) {
       //std::cout << "Allocate " << n_ << "\n";
       //return static_cast<T*> (::operator new (n_*sizeof(T)));
-      
       auto p =  &(_data[_index]);
       _index++;
       return p;
@@ -40,17 +171,6 @@ namespace test::memAlloc {
 
   template <typename T, typename U>
   bool operator!=(const MyMemAlloc<T>&, const MyMemAlloc<U>&) { return false;}
-
-  int noShiftIndex(int u_, int ) { return u_; }
-
-  int shiftIndex(int u_, int total_) {
-    if (u_%2==0) {
-      return u_/2;
-    } else {
-      //return total_/2 + u_/2 ;
-      return total_-1 - u_/2;
-    }
-  }
 
   template <typename Map>
   void testBase(Map& map_, std::function<int(int,int)>(fnShiftIndex_)) {

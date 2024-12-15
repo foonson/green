@@ -4,10 +4,10 @@
 #include <tuple>
 
 namespace util {
-  template<typename T>
+  template<typename T=uint64_t>
   class NumStats {
   public:
-    NumStats () : _sum(0), _count(0), _sum2(0) {}
+    NumStats () {}
     void add(T i_) {
         if (_count==0) {
             _max = i_;
